@@ -287,6 +287,9 @@
           </Border>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new VisualizationPanel()"/>
+      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">

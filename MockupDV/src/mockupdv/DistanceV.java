@@ -50,7 +50,7 @@ public class DistanceV extends javax.swing.JFrame {
         errorField = new javax.swing.JTextField();
         statisticsUpdate = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        panel = new javax.swing.JPanel();
+        panel = new VisualizationPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         button2D = new javax.swing.JToggleButton();
         positionBox = new javax.swing.JComboBox<>();

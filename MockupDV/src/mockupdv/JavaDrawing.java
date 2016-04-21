@@ -124,8 +124,8 @@ public class JavaDrawing extends JPanel
 	//-------------------------------------------------
 	/** main */
 	//-------------------------------------------------
-	public static void main(String[] args)
-	{
-		JavaDrawing jd = new JavaDrawing();
-	}
+//	public static void main(String[] args)
+//	{
+//		JavaDrawing jd = new JavaDrawing();
+//	}
 }
