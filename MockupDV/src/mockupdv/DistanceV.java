@@ -52,6 +52,7 @@ public class DistanceV extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         panel = new VisualizationPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        canvas = new Visualization();
         button2D = new javax.swing.JToggleButton();
         positionBox = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
@@ -151,12 +152,15 @@ public class DistanceV extends javax.swing.JFrame {
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addComponent(canvas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelLayout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 395, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(canvas, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         button2D.setText("2D");
@@ -361,13 +365,7 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_addXYActionPerformed
 
     private void statisticsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsActionPerformed
-        //statisticsFrame.setVisible(true);
-        
-        Graphics fx = (Graphics)panel.getGraphics();
-
-        fx.fillArc(30, 30, 10, 10, 0, 360);
-        fx.fillArc(60, 30, 10, 10, 0, 360);
-        fx.fillArc(90, 30, 10, 10, 0, 360);
+        statisticsFrame.setVisible(true);
     }//GEN-LAST:event_statisticsActionPerformed
 
     private void freezeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freezeActionPerformed
@@ -455,6 +453,7 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JButton addMatrix;
     private javax.swing.JButton addXY;
     private javax.swing.JToggleButton button2D;
+    private java.awt.Canvas canvas;
     private javax.swing.JTextField errorField;
     private javax.swing.JButton filter;
     private javax.swing.JCheckBoxMenuItem freeze;

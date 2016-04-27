@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mockupdv;
 
 import java.awt.*;
@@ -23,58 +18,62 @@ import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 
 /**
- *
- * @author santi
+ * NeHe Lesson #3 (JOGL 2 Port): Adding Colors
+ * @author Hock-Chuan Chua
+ * @version May 2012
  */
-public class Visualization extends GLCanvas implements GLEventListener {
+@SuppressWarnings("serial")
+public class JOGL2Nehe03Color extends GLCanvas implements GLEventListener {
    // Define constants for the top-level container
+   private static String TITLE = "NeHe Lesson #3: Adding Colors";
    private static final int CANVAS_WIDTH = 320;  // width of the drawable
    private static final int CANVAS_HEIGHT = 240; // height of the drawable
    private static final int FPS = 60; // animator's target frames per second
    
    /** The entry main() method to setup the top-level container and animator */
-//   public static void main(String[] args) {
-//      // Run the GUI codes in the event-dispatching thread for thread safety
-//      SwingUtilities.invokeLater(new Runnable() {
-//         @Override
-//         public void run() {
-//            // Create the OpenGL rendering canvas
-//            GLCanvas canvas = new JOGL2Nehe03Color();
-//            canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-//
-//            // Create a animator that drives canvas' display() at the specified FPS. 
-//            final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-//            
-//            // Create the top-level container
-//            final JFrame frame = new JFrame(); // Swing's JFrame or AWT's Frame
-//            frame.getContentPane().add(canvas);
-//            frame.addWindowListener(new WindowAdapter() {
-//               @Override 
-//               public void windowClosing(WindowEvent e) {
-//                  // Use a dedicate thread to run the stop() to ensure that the
-//                  // animator stops before program exits.
-//                  new Thread() {
-//                     @Override 
-//                     public void run() {
-//                        if (animator.isStarted()) animator.stop();
-//                        System.exit(0);
-//                     }
-//                  }.start();
-//               }
-//            });
-//            frame.pack();
-//            frame.setVisible(true);
-//            animator.start(); // start the animation loop
-//         }
-//      });
-//   }
+   public static void main(String[] args) {
+      // Run the GUI codes in the event-dispatching thread for thread safety
+      SwingUtilities.invokeLater(new Runnable() {
+         @Override
+         public void run() {
+            // Create the OpenGL rendering canvas
+            GLCanvas canvas = new JOGL2Nehe03Color();
+            canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+
+            // Create a animator that drives canvas' display() at the specified FPS. 
+            final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
+            
+            // Create the top-level container
+            final JFrame frame = new JFrame(); // Swing's JFrame or AWT's Frame
+            frame.getContentPane().add(canvas);
+            frame.addWindowListener(new WindowAdapter() {
+               @Override 
+               public void windowClosing(WindowEvent e) {
+                  // Use a dedicate thread to run the stop() to ensure that the
+                  // animator stops before program exits.
+                  new Thread() {
+                     @Override 
+                     public void run() {
+                        if (animator.isStarted()) animator.stop();
+                        System.exit(0);
+                     }
+                  }.start();
+               }
+            });
+            frame.setTitle(TITLE);
+            frame.pack();
+            frame.setVisible(true);
+            animator.start(); // start the animation loop
+         }
+      });
+   }
    
    // Setup OpenGL Graphics Renderer
    
    private GLU glu;  // for the GL Utility
    
    /** Constructor to setup the GUI for this Component */
-   public Visualization() {
+   public JOGL2Nehe03Color() {
       this.addGLEventListener(this);
    }
    
