@@ -12,6 +12,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
 import static com.jogamp.opengl.GL.*;  // GL constants
@@ -26,7 +27,7 @@ import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
  *
  * @author santi
  */
-public class Visualization extends GLCanvas implements GLEventListener {
+public class Visualization extends GLJPanel implements GLEventListener {
    // Define constants for the top-level container
    private static final int CANVAS_WIDTH = 320;  // width of the drawable
    private static final int CANVAS_HEIGHT = 240; // height of the drawable
