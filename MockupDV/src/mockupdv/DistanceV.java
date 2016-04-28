@@ -18,7 +18,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.*;
-import mockupdv.JavaDrawing;
 
 public class DistanceV extends javax.swing.JFrame {
     
