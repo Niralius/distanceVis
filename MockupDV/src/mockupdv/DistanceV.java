@@ -16,8 +16,11 @@ import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.*;
+import mockupdv.DistanceChooser;
 
 public class DistanceV extends javax.swing.JFrame {
     
@@ -355,6 +358,13 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void addXYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addXYActionPerformed
         jFileChooser1.showOpenDialog(this);
+        File xyzPos = jFileChooser1.getSelectedFile();
+        try {
+            DistanceChooser position = new DistanceChooser(xyzPos);
+            //System.out.println(DistanceChooser.xpos.get(0));
+        } catch (Exception e) {
+            System.out.println("Choose a correct file");
+        }
     }//GEN-LAST:event_addXYActionPerformed
 
     private void statisticsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsActionPerformed

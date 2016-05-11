@@ -147,7 +147,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glColor3f(0.5f, 0.5f, 1.0f); // Light-blue
       gl.glBegin(GL_QUADS); // draw using quads
          gl.glColor3f(1.0f, 0.0f, 0.0f);
-         gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+         gl.glVertex3f(-2.0f, 1.0f, 0.0f);
          gl.glColor3f(0.0f, 1.0f, 0.0f);
          gl.glVertex3f(1.0f, 1.0f, 0.0f);
          gl.glColor3f(0.0f, 0.0f, 1.0f);

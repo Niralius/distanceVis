@@ -1,10 +1,12 @@
 package mockupdv;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import mockupdv.Labeling;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,14 +18,19 @@ import java.util.StringTokenizer;
  *
  * @author santi
  */
+
 public class DistanceChooser {
     
-    public DistanceChooser(String file) throws Exception {
-        BufferedReader br = new BufferedReader(new FileReader("/Users/Michael/Documents/1.txt"));
+    public static List<String> names = new ArrayList<>();
+    public static List<Double> xpos = new ArrayList<>();
+    public static List<Double> ypos = new ArrayList<>();
+    
+    public DistanceChooser(File file) throws Exception {
+        
+        BufferedReader br = new BufferedReader(new FileReader(file));
         
         boolean first = true;
         int sizeOfMatrix = 0;
-        List<String> ids = new ArrayList<>();
         double m[][] = null;
         int i = 0;
         while(true) {
@@ -43,7 +50,13 @@ public class DistanceChooser {
             StringTokenizer st = new StringTokenizer(line," \t");
             int j = 0;
             String id = st.nextToken();
-            ids.add(id);
+            String xp = st.nextToken();
+            String yp = st.nextToken();
+            double number = Double.parseDouble(xp);
+            xpos.add(number);
+            double number2 = Double.parseDouble(yp);
+            ypos.add(number2);
+            names.add(id);
             while(st.hasMoreTokens()) {
                 String t = st.nextToken();
                 m[i][j] = Double.parseDouble(t);
@@ -52,9 +65,12 @@ public class DistanceChooser {
             i++;
         }
 
-        System.out.println(ids);
+//        System.out.println(names);
+//        System.out.println(xpos);
+//        System.out.println(ypos);
         
     }
+    
 }
 
 
