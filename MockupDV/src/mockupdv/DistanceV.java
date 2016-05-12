@@ -20,7 +20,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.*;
-import mockupdv.DistanceChooser;
+import static mockupdv.matrixChooser.matrixD;
+import mockupdv.xyzChooser;
 
 public class DistanceV extends javax.swing.JFrame {
     
@@ -360,7 +361,7 @@ public class DistanceV extends javax.swing.JFrame {
         jFileChooser1.showOpenDialog(this);
         File xyzPos = jFileChooser1.getSelectedFile();
         try {
-            DistanceChooser position = new DistanceChooser(xyzPos);
+            xyzChooser position = new xyzChooser(xyzPos);
             //System.out.println(DistanceChooser.xpos.get(0));
         } catch (Exception e) {
             System.out.println("Choose a correct file");
@@ -388,7 +389,14 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_addLabelsActionPerformed
 
     private void addMatrixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMatrixActionPerformed
-        int matrixFile = jFileChooser1.showOpenDialog(this);
+        jFileChooser1.showOpenDialog(this);
+        File matrixPos = jFileChooser1.getSelectedFile();
+        try {
+            matrixChooser position = new matrixChooser(matrixPos);
+            //System.out.println(matrixChooser.matrixD.size());
+        } catch (Exception e) {
+            System.out.println("Choose a correct file");
+        }
     }//GEN-LAST:event_addMatrixActionPerformed
 
     private void statisticsUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsUpdateActionPerformed

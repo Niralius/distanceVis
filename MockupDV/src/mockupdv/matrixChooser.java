@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import mockupdv.Labeling;
 
 /*
@@ -16,16 +17,15 @@ import mockupdv.Labeling;
 
 /**
  *
- * @author santi
+ * @author MichaelH
  */
 
-public class DistanceChooser {
+public class matrixChooser {
     
-    public static List<String> names = new ArrayList<>();
-    public static List<Double> xpos = new ArrayList<>();
-    public static List<Double> ypos = new ArrayList<>();
+    public static List<String> names = new ArrayList<>();   
+    public static List<String> matrixD = new ArrayList<>();
     
-    public DistanceChooser(File file) throws Exception {
+    public matrixChooser(File file) throws Exception {
         
         BufferedReader br = new BufferedReader(new FileReader(file));
         
@@ -41,6 +41,7 @@ public class DistanceChooser {
                 st.nextToken();
                 while(st.hasMoreTokens()) {
                     String t = st.nextToken();
+                    matrixD.add(t);
                     sizeOfMatrix++;
                 }
                 m = new double[sizeOfMatrix][sizeOfMatrix];
@@ -50,12 +51,6 @@ public class DistanceChooser {
             StringTokenizer st = new StringTokenizer(line," \t");
             int j = 0;
             String id = st.nextToken();
-            String xp = st.nextToken();
-            String yp = st.nextToken();
-            double number = Double.parseDouble(xp);
-            xpos.add(number);
-            double number2 = Double.parseDouble(yp);
-            ypos.add(number2);
             names.add(id);
             while(st.hasMoreTokens()) {
                 String t = st.nextToken();
@@ -64,11 +59,12 @@ public class DistanceChooser {
             }
             i++;
         }
-
-//        System.out.println(names);
-//        System.out.println(xpos);
-//        System.out.println(ypos);
-        
+/**
+*          System.out.println(names);
+*          System.out.println(names.size());
+*
+*          System.out.println(matrixD);
+*/
     }
     
 }

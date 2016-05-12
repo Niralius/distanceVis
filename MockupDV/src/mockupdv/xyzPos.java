@@ -6,7 +6,7 @@
 package mockupdv;
 
 import java.io.File;
-import mockupdv.DistanceChooser;
+import mockupdv.xyzChooser;
 /**
  *
  * @author MichaelH
