@@ -23,6 +23,8 @@ import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 
+import mockupdv.xyzPos;
+
 /**
  *
  * @author santi
@@ -115,7 +117,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
       gl.glLoadIdentity();             // reset projection matrix
       glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
-
+      
       // Enable the model-view transform
       gl.glMatrixMode(GL_MODELVIEW);
       gl.glLoadIdentity(); // reset
@@ -130,8 +132,24 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
 
+      xyzPos positions = new xyzPos();
+
+      for(int i = 0; i < positions.x.length; i++){
+          
+          gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+          gl.glBegin(GL_TRIANGLES);
+            gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
+            gl.glVertex3f(0.0f, 0.2f, 0.0f);
+            gl.glColor3f(0.0f, 1.0f, 0.0f); // Green
+            gl.glVertex3f(-0.2f, -0.2f, 0.0f);
+            gl.glColor3f(0.0f, 0.0f, 1.0f); // Blue
+            gl.glVertex3f(0.2f, -0.2f, 0.0f);
+          gl.glEnd();
+          
+      }
+      
       // ----- Render a triangle -----
-      gl.glTranslatef(-1.5f, 0.0f, -6.0f); // translate left and into the screen
+      gl.glTranslatef(-1.5f, 0.0f, -12.0f); // translate left and into the screen
       gl.glBegin(GL_TRIANGLES); // draw using triangles
          gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
          gl.glVertex3f(0.0f, 1.0f, 0.0f);

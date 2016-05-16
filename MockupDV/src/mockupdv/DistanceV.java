@@ -359,9 +359,9 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void addXYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addXYActionPerformed
         jFileChooser1.showOpenDialog(this);
-        File xyzPos = jFileChooser1.getSelectedFile();
+        File xyzPosition = jFileChooser1.getSelectedFile();
         try {
-            xyzChooser position = new xyzChooser(xyzPos);
+            xyzChooser position = new xyzChooser(xyzPosition);
             //System.out.println(DistanceChooser.xpos.get(0));
         } catch (Exception e) {
             System.out.println("Choose a correct file");
