@@ -27,7 +27,7 @@ public class DistanceV extends javax.swing.JFrame {
     
     //JPanel panel = new JPanel();
     
-    public Visualization vis = null;
+//    public Visualization vis = null;
 
     /**
      * Creates new form DistanceV
@@ -362,8 +362,11 @@ public class DistanceV extends javax.swing.JFrame {
         File xyzPosition = jFileChooser1.getSelectedFile();
         try {
             xyzChooser position = new xyzChooser(xyzPosition);
+            ((Visualization)panel).addXyz(position);
+            ((Visualization)panel).repaint();
             //System.out.println(DistanceChooser.xpos.get(0));
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Choose a correct file");
         }
     }//GEN-LAST:event_addXYActionPerformed

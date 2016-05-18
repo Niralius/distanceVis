@@ -21,17 +21,17 @@ import mockupdv.xyzPos;
  * @author santi
  */
 
-public class xyzChooser {
+public class xyzChooser extends xyzPos {
     
     public static List<String> names = new ArrayList<>();
-    public static List<Double> xpos = new ArrayList<>();
-    public static List<Double> ypos = new ArrayList<>();
-    public static List<Double> zpos = new ArrayList<>();
     
     
     public xyzChooser(File file) throws Exception {
         
         BufferedReader br = new BufferedReader(new FileReader(file));
+        List<Double> xpos = new ArrayList<>();
+        List<Double> ypos = new ArrayList<>();
+        List<Double> zpos = new ArrayList<>();
         
         boolean first = true;
         int sizeOfMatrix = 0;
@@ -62,18 +62,13 @@ public class xyzChooser {
             double number2 = Double.parseDouble(yp);
             ypos.add(number2);
             
-            xyzPos positions = new xyzPos();
-            positions.xPosition(xpos);
-            positions.yPosition(ypos);
-            
-            if(st.hasMoreTokens()){
+            //if(st.hasMoreTokens()){
                 
                 double number3 = Double.parseDouble(zp);
                 zpos.add(number3);
-                positions.zPosition(zpos);
+  //              positions.zPosition(zpos);
             
-            }
-            
+            //}
             names.add(id);
 //            while(st.hasMoreTokens()) {
 //                String t = st.nextToken();
@@ -82,9 +77,19 @@ public class xyzChooser {
 //            } 
             i++;
         }
-
+        
+        x = new Double[xpos.size()];
+        y = new Double[ypos.size()];
+        z = new Double[zpos.size()];
+        for(i = 0;i<xpos.size();i++) {
+            x[i] = xpos.get(i);
+            y[i] = ypos.get(i);
+            z[i] = zpos.get(i);
+        }
+        
     }
     
+    /*
     public List getx(){
         return this.xpos;
     }
@@ -96,5 +101,5 @@ public class xyzChooser {
     public List getz(){
         return this.zpos;
     }
-
+    */
 }

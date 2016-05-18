@@ -22,6 +22,7 @@ import static com.jogamp.opengl.GL2ES3.GL_QUADS;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+import java.util.ArrayList;
 
 import mockupdv.xyzPos;
 
@@ -34,6 +35,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
    private static final int CANVAS_WIDTH = 320;  // width of the drawable
    private static final int CANVAS_HEIGHT = 240; // height of the drawable
    private static final int FPS = 60; // animator's target frames per second
+   
+   java.util.List<xyzPos> xyzPosList;
    
    /** The entry main() method to setup the top-level container and animator */
 //   public static void main(String[] args) {
@@ -78,6 +81,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
    
    /** Constructor to setup the GUI for this Component */
    public Visualization() {
+        this.xyzPosList = new ArrayList<>();
       this.addGLEventListener(this);
    }
    
@@ -132,22 +136,26 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
 
-      xyzPos positions = new xyzPos();
+      xyzPos positions = null;
+      if (!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
+      
+      if(positions!=null && positions.x != null){
+        for(int i = 0; i < positions.x.length; i++){
 
-      for(int i = 0; i < positions.x.length; i++){
-          
-          gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-          gl.glBegin(GL_TRIANGLES);
-            gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
-            gl.glVertex3f(0.0f, 0.2f, 0.0f);
-            gl.glColor3f(0.0f, 1.0f, 0.0f); // Green
-            gl.glVertex3f(-0.2f, -0.2f, 0.0f);
-            gl.glColor3f(0.0f, 0.0f, 1.0f); // Blue
-            gl.glVertex3f(0.2f, -0.2f, 0.0f);
-          gl.glEnd();
-          
+            gl.glPushMatrix();
+            gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+            gl.glBegin(GL_TRIANGLES);
+              gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
+              gl.glVertex3f(0.0f, 0.2f, 0.0f);
+              gl.glVertex3f(-0.2f, -0.2f, 0.0f);
+              gl.glVertex3f(0.2f, -0.2f, 0.0f);
+            gl.glEnd();
+            gl.glPopMatrix();
+
+        }
       }
       
+      /*
       // ----- Render a triangle -----
       gl.glTranslatef(-1.5f, 0.0f, -12.0f); // translate left and into the screen
       gl.glBegin(GL_TRIANGLES); // draw using triangles
@@ -173,6 +181,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
          gl.glColor3f(1.0f, 0.0f, 1.0f);
          gl.glVertex3f(-1.0f, -1.0f, 0.0f);
       gl.glEnd();
+      */
    }
 
    /** 
@@ -180,4 +189,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
     */
    @Override
    public void dispose(GLAutoDrawable drawable) { }
+   
+   public void addXyz(xyzPos pos) {
+       xyzPosList.add(pos);
+   }
 }
