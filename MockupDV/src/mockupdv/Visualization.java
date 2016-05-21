@@ -23,20 +23,23 @@ import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import java.util.ArrayList;
+import static mockupdv.xyzChooser.getMax;
+import static mockupdv.xyzChooser.getMin;
 
 import mockupdv.xyzPos;
 
 /**
  *
- * @author santi
+ * @author MichaelH
  */
 public class Visualization extends GLJPanel implements GLEventListener {
    // Define constants for the top-level container
-   private static final int CANVAS_WIDTH = 320;  // width of the drawable
-   private static final int CANVAS_HEIGHT = 240; // height of the drawable
-   private static final int FPS = 60; // animator's target frames per second
+//   private static final int CANVAS_WIDTH = 320;  // width of the drawable
+//   private static final int CANVAS_HEIGHT = 240; // height of the drawable
+//   private static final int FPS = 60; // animator's target frames per second
    
    java.util.List<xyzPos> xyzPosList;
+   xyzPos positions = null;
    
    /** The entry main() method to setup the top-level container and animator */
 //   public static void main(String[] args) {
@@ -110,7 +113,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
    @Override
    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
-
+            
       if (height == 0) height = 1;   // prevent divide by zero
       float aspect = (float)width / height;
 
@@ -121,7 +124,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
       gl.glLoadIdentity();             // reset projection matrix
       glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
-      
+            
       // Enable the model-view transform
       gl.glMatrixMode(GL_MODELVIEW);
       gl.glLoadIdentity(); // reset
@@ -136,22 +139,29 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
 
-      xyzPos positions = null;
+
+//      xyzPos positions = null;
       if (!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
       
       if(positions!=null && positions.x != null){
+          
+        glu.gluLookAt(positions.centerX, positions.centerY, positions.maxZ + 30, 
+            positions.centerX, positions.centerY, positions.centerZ, 
+            0, 1, 0);
+                
         for(int i = 0; i < positions.x.length; i++){
 
-            gl.glPushMatrix();
-            gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-            gl.glBegin(GL_TRIANGLES);
-              gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
-              gl.glVertex3f(0.0f, 0.2f, 0.0f);
-              gl.glVertex3f(-0.2f, -0.2f, 0.0f);
-              gl.glVertex3f(0.2f, -0.2f, 0.0f);
-            gl.glEnd();
-            gl.glPopMatrix();
-
+        gl.glPushMatrix();
+        gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+        gl.glBegin(GL_TRIANGLES);
+          //gl.glLoadName(i);
+          gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
+          gl.glVertex3f(0.0f, 0.2f, 0.0f);
+          gl.glVertex3f(-0.2f, -0.2f, 0.0f);
+          gl.glVertex3f(0.2f, -0.2f, 0.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+            
         }
       }
       
@@ -174,11 +184,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glBegin(GL_QUADS); // draw using quads
          gl.glColor3f(1.0f, 0.0f, 0.0f);
          gl.glVertex3f(-1.0f, 1.0f, 0.0f);
-         gl.glColor3f(0.0f, 1.0f, 0.0f);
          gl.glVertex3f(1.0f, 1.0f, 0.0f);
-         gl.glColor3f(0.0f, 0.0f, 1.0f);
          gl.glVertex3f(1.0f, -1.0f, 0.0f);
-         gl.glColor3f(1.0f, 0.0f, 1.0f);
          gl.glVertex3f(-1.0f, -1.0f, 0.0f);
       gl.glEnd();
       */

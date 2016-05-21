@@ -17,6 +17,11 @@ public class xyzPos {
     
     public Double x[], y[], z[];
     
+    public Double minX, maxX,
+                  minY, maxY,
+                  minZ, maxZ;
+    public Double centerX, centerY, centerZ;
+    
     
     void xPosition(List<Double> xpos){
         x = new Double[xpos.size()];
@@ -35,5 +40,26 @@ public class xyzPos {
         for(int i = 0; i<zpos.size(); i++ )
             z[i] = zpos.get(i);
     }
+    
+    public static Double getMax(Double[] inputArray){ 
+        Double maxValue = inputArray[0]; 
+        for(int i=1;i < inputArray.length;i++){ 
+            if(inputArray[i] > maxValue){ 
+                maxValue = inputArray[i]; 
+            } 
+        } 
+      return maxValue; 
+    }
+    
+    public static Double getMin(Double[] inputArray){ 
+        Double minValue = inputArray[0]; 
+        for(int i=1;i<inputArray.length;i++){ 
+            if(inputArray[i] < minValue){ 
+                minValue = inputArray[i]; 
+            } 
+        } 
+    return minValue; 
+  } 
+    
     
 }

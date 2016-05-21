@@ -53,7 +53,7 @@ public class DistanceV extends javax.swing.JFrame {
         errorField = new javax.swing.JTextField();
         statisticsUpdate = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        panel = new Visualization();
+        visPanel = new Visualization();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         button2D = new javax.swing.JToggleButton();
         positionBox = new javax.swing.JComboBox<>();
@@ -147,17 +147,17 @@ public class DistanceV extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Distance Visualizer");
 
-        panel.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        visPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder());
 
-        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
-        panel.setLayout(panelLayout);
-        panelLayout.setHorizontalGroup(
-            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout visPanelLayout = new javax.swing.GroupLayout(visPanel);
+        visPanel.setLayout(visPanelLayout);
+        visPanelLayout.setHorizontalGroup(
+            visPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
         );
-        panelLayout.setVerticalGroup(
-            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelLayout.createSequentialGroup()
+        visPanelLayout.setVerticalGroup(
+            visPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(visPanelLayout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(409, Short.MAX_VALUE))
         );
@@ -274,7 +274,7 @@ public class DistanceV extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(visPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(178, 178, 178)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -318,7 +318,7 @@ public class DistanceV extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(visPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -362,12 +362,11 @@ public class DistanceV extends javax.swing.JFrame {
         File xyzPosition = jFileChooser1.getSelectedFile();
         try {
             xyzChooser position = new xyzChooser(xyzPosition);
-            ((Visualization)panel).addXyz(position);
-            ((Visualization)panel).repaint();
+            ((Visualization)visPanel).addXyz(position);
+            ((Visualization)visPanel).repaint();
             //System.out.println(DistanceChooser.xpos.get(0));
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Choose a correct file");
         }
     }//GEN-LAST:event_addXYActionPerformed
 
@@ -485,7 +484,6 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jpg;
     private javax.swing.JCheckBoxMenuItem outline;
-    private javax.swing.JPanel panel;
     private javax.swing.JTextField pearsonField;
     private javax.swing.JComboBox<String> positionBox;
     private javax.swing.JCheckBox split;
@@ -493,5 +491,6 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JButton statistics;
     private javax.swing.JFrame statisticsFrame;
     private javax.swing.JButton statisticsUpdate;
+    private javax.swing.JPanel visPanel;
     // End of variables declaration//GEN-END:variables
 }

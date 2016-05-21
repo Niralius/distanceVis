@@ -56,7 +56,7 @@ public class xyzChooser extends xyzPos {
             String id = st.nextToken();
             String xp = st.nextToken();
             String yp = st.nextToken();
-            String zp = st.nextToken();
+            String zp = (st.hasMoreTokens() ? st.nextToken():"-12");
             double number = Double.parseDouble(xp);
             xpos.add(number);
             double number2 = Double.parseDouble(yp);
@@ -66,9 +66,9 @@ public class xyzChooser extends xyzPos {
                 
                 double number3 = Double.parseDouble(zp);
                 zpos.add(number3);
-  //              positions.zPosition(zpos);
             
             //}
+            
             names.add(id);
 //            while(st.hasMoreTokens()) {
 //                String t = st.nextToken();
@@ -87,19 +87,36 @@ public class xyzChooser extends xyzPos {
             z[i] = zpos.get(i);
         }
         
+        maxX = getMax(x);
+        minX = getMin(x);
+        maxY = getMax(y);
+        minY = getMin(y);
+        maxZ = getMax(z);
+        minZ = getMin(z);
+        
+        centerX = (maxX + minX)/2;
+        centerY = (maxY + minY)/2;
+        centerZ = (maxZ + minZ)/2;
     }
     
-    /*
-    public List getx(){
-        return this.xpos;
-    }
-    
-    public List gety(){
-        return this.ypos;
-    }
-    
-    public List getz(){
-        return this.zpos;
-    }
-    */
+//    public static Double getMax(Double[] inputArray){ 
+//        Double maxValue = inputArray[0]; 
+//        for(int i=1;i < inputArray.length;i++){ 
+//            if(inputArray[i] > maxValue){ 
+//                maxValue = inputArray[i]; 
+//            } 
+//       } 
+//      return maxValue; 
+//    }
+//    
+//    public static Double getMin(Double[] inputArray){ 
+//        Double minValue = inputArray[0]; 
+//        for(int i=1;i<inputArray.length;i++){ 
+//            if(inputArray[i] < minValue){ 
+//                minValue = inputArray[i]; 
+//            } 
+//        } 
+//    return minValue; 
+//  } 
+
 }
