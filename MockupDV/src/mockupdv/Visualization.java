@@ -27,6 +27,7 @@ import static mockupdv.xyzChooser.getMax;
 import static mockupdv.xyzChooser.getMin;
 
 import mockupdv.xyzPos;
+import mockupdv.Listener;
 
 /**
  *
@@ -38,8 +39,11 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //   private static final int CANVAS_HEIGHT = 240; // height of the drawable
 //   private static final int FPS = 60; // animator's target frames per second
    
-   java.util.List<xyzPos> xyzPosList;
-   xyzPos positions = null;
+    java.util.List<xyzPos> xyzPosList;
+    xyzPos positions = null;
+   
+    double scale = 1;
+    double angle = 0;
    
    /** The entry main() method to setup the top-level container and animator */
 //   public static void main(String[] args) {
@@ -138,7 +142,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
-
 
 //      xyzPos positions = null;
       if (!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
