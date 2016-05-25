@@ -117,6 +117,11 @@ public class Visualization extends GLJPanel implements GLEventListener {
    @Override
    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
+      
+        Listener ml = new Listener(this);
+        addMouseListener(ml);
+        addMouseMotionListener(ml);
+        addMouseWheelListener(ml);
             
       if (height == 0) height = 1;   // prevent divide by zero
       float aspect = (float)width / height;
@@ -127,7 +132,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       // Setup perspective projection, with aspect ratio matches viewport
       gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
       gl.glLoadIdentity();             // reset projection matrix
-      glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
+      glu.gluPerspective(scale*45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
             
       // Enable the model-view transform
       gl.glMatrixMode(GL_MODELVIEW);
