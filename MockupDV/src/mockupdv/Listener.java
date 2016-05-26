@@ -40,17 +40,16 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
     }
     
     public void mouseWheelMoved(MouseWheelEvent e) {
-    // NOTE: the e.isShiftDown() trick apparently only works on Mac to distinguish V/H scrolling
-    if (e.isShiftDown()) {
-        // horizontal scrolling:
-        ap.angle += e.getPreciseWheelRotation()/20;
-    } else {
-        // vertical scrolling:
-        double factor = Math.pow(1.05, e.getPreciseWheelRotation());
-        double newZoom = ap.scale * factor;
-        ap.scale = newZoom;
-
-           }
+        // NOTE: the e.isShiftDown() trick apparently only works on Mac to distinguish V/H scrolling
+        if (e.isShiftDown()) {
+            // horizontal scrolling:
+            ap.angle += e.getPreciseWheelRotation()/20;
+        } else {
+            // vertical scrolling:
+            double factor = Math.pow(1.05, e.getWheelRotation());
+            double newZoom = ap.scale * factor;
+            ap.scale = newZoom;
+        }
     }
     
 }

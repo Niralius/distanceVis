@@ -132,7 +132,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       // Setup perspective projection, with aspect ratio matches viewport
       gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
       gl.glLoadIdentity();             // reset projection matrix
-      glu.gluPerspective(scale*45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
+      glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
             
       // Enable the model-view transform
       gl.glMatrixMode(GL_MODELVIEW);
@@ -153,7 +153,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       
       if(positions!=null && positions.x != null){
           
-        glu.gluLookAt(positions.centerX, positions.centerY, positions.maxZ + 30, 
+        glu.gluLookAt(positions.centerX, positions.centerY, positions.maxZ + 30*scale, 
             positions.centerX, positions.centerY, positions.centerZ, 
             0, 1, 0);
                 
