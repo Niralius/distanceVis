@@ -422,7 +422,7 @@ public class DistanceV extends javax.swing.JFrame {
         }
            
     }//GEN-LAST:event_splitActionPerformed
-
+    
     /**
      * @param args the command line arguments
      */

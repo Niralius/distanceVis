@@ -153,7 +153,9 @@ public class Visualization extends GLJPanel implements GLEventListener {
       
       if(positions!=null && positions.x != null){
           
-        glu.gluLookAt(positions.centerX, positions.centerY, positions.maxZ + 30*scale, 
+        Double camDistance = positions.maxZ + 30+scale;
+          
+        glu.gluLookAt(positions.centerX, positions.centerY, camDistance, 
             positions.centerX, positions.centerY, positions.centerZ, 
             0, 1, 0);
                 

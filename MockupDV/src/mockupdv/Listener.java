@@ -11,6 +11,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import mockupdv.Visualization;
+
 /**
  *
  * @author MichaelH
@@ -37,6 +39,7 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
     public void mouseReleased(MouseEvent e) {
     }
     public void mouseDragged(MouseEvent e) {
+        
     }
     
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -46,9 +49,10 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
             ap.angle += e.getPreciseWheelRotation()/20;
         } else {
             // vertical scrolling:
-            double factor = Math.pow(1.05, e.getWheelRotation());
-            double newZoom = ap.scale * factor;
+            double factor = e.getWheelRotation();
+            double newZoom = ap.scale + 0.5*factor;
             ap.scale = newZoom;
+            
         }
     }
     
