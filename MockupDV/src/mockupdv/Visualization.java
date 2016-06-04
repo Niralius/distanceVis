@@ -44,6 +44,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
    
     double scale = 1;
     double angle = 0;
+    double shiftX = 0;
+    double shiftY = 0;
    
    /** The entry main() method to setup the top-level container and animator */
 //   public static void main(String[] args) {
@@ -155,22 +157,27 @@ public class Visualization extends GLJPanel implements GLEventListener {
           
         Double camDistance = positions.maxZ + 30+scale;
           
-        glu.gluLookAt(positions.centerX, positions.centerY, camDistance, 
-            positions.centerX, positions.centerY, positions.centerZ, 
+        glu.gluLookAt(positions.centerX + angle, positions.centerY, camDistance, 
+            positions.centerX - shiftX, positions.centerY + shiftY, positions.centerZ, 
             0, 1, 0);
+        this.repaint();
                 
         for(int i = 0; i < positions.x.length; i++){
 
-        gl.glPushMatrix();
-        gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-        gl.glBegin(GL_TRIANGLES);
-          //gl.glLoadName(i);
-          gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
-          gl.glVertex3f(0.0f, 0.2f, 0.0f);
-          gl.glVertex3f(-0.2f, -0.2f, 0.0f);
-          gl.glVertex3f(0.2f, -0.2f, 0.0f);
-        gl.glEnd();
-        gl.glPopMatrix();
+            gl.glPushMatrix();
+//            if () {
+//                gl.glTranslated(positions.x[i], positions.y[i], 0);
+//            } else {
+                gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+//            }
+            gl.glBegin(GL_TRIANGLES);
+              //gl.glLoadName(i);
+              gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
+              gl.glVertex3f(0.0f, 0.2f, 0.0f);
+              gl.glVertex3f(-0.2f, -0.2f, 0.0f);
+              gl.glVertex3f(0.2f, -0.2f, 0.0f);
+            gl.glEnd();
+            gl.glPopMatrix();
             
         }
       }

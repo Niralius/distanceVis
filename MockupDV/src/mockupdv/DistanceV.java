@@ -355,6 +355,7 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void button2DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2DActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_button2DActionPerformed
 
     private void addXYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addXYActionPerformed
@@ -397,7 +398,7 @@ public class DistanceV extends javax.swing.JFrame {
             matrixChooser position = new matrixChooser(matrixPos);
             //System.out.println(matrixChooser.matrixD.size());
         } catch (Exception e) {
-            System.out.println("Choose a correct file");
+            e.printStackTrace();
         }
     }//GEN-LAST:event_addMatrixActionPerformed
 

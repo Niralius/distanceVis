@@ -20,6 +20,7 @@ public class xyzPos {
     public Double minX, maxX,
                   minY, maxY,
                   minZ, maxZ;
+    
     public Double centerX, centerY, centerZ;
     
     
