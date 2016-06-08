@@ -16,6 +16,8 @@ import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -25,7 +27,6 @@ import mockupdv.xyzChooser;
 
 public class DistanceV extends javax.swing.JFrame {
     
-    //JPanel panel = new JPanel();
     
 //    public Visualization vis = null;
 
@@ -35,7 +36,10 @@ public class DistanceV extends javax.swing.JFrame {
     public DistanceV() {
         initComponents();
     }
-
+    
+    List<String> allLabelsSelected = new LinkedList<>();
+    List<String> allLabelsIgnored = new LinkedList<>();
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,7 +56,22 @@ public class DistanceV extends javax.swing.JFrame {
         pearsonField = new javax.swing.JTextField();
         errorField = new javax.swing.JTextField();
         statisticsUpdate = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
+        colorFrame = new javax.swing.JFrame();
+        redField = new javax.swing.JTextField();
+        greenField = new javax.swing.JTextField();
+        blueField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        setColor = new javax.swing.JButton();
+        labelFrame = new javax.swing.JFrame();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        labelIgnoreList = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        labelSeenList = new javax.swing.JList<>();
+        ignoreLabel = new javax.swing.JButton();
+        addLabel = new javax.swing.JButton();
+        colorLabel = new javax.swing.JButton();
         visPanel = new Visualization();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         button2D = new javax.swing.JToggleButton();
@@ -69,6 +88,7 @@ public class DistanceV extends javax.swing.JFrame {
         split = new javax.swing.JCheckBox();
         splitBox = new javax.swing.JComboBox<>();
         filter = new javax.swing.JButton();
+        labels = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         SVG = new javax.swing.JMenuItem();
@@ -144,6 +164,116 @@ public class DistanceV extends javax.swing.JFrame {
                 .addGap(51, 51, 51))
         );
 
+        colorFrame.setMinimumSize(new java.awt.Dimension(184, 210));
+
+        redField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                redFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("R:");
+
+        jLabel6.setText("G:");
+
+        jLabel7.setText("B:");
+
+        setColor.setText("Set Color");
+        setColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setColorActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout colorFrameLayout = new javax.swing.GroupLayout(colorFrame.getContentPane());
+        colorFrame.getContentPane().setLayout(colorFrameLayout);
+        colorFrameLayout.setHorizontalGroup(
+            colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(colorFrameLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(colorFrameLayout.createSequentialGroup()
+                        .addGroup(colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(greenField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(redField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(blueField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(setColor))
+                .addGap(49, 49, 49))
+        );
+        colorFrameLayout.setVerticalGroup(
+            colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(colorFrameLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(redField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addGroup(colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(greenField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addGap(18, 18, 18)
+                .addGroup(colorFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(blueField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(27, 27, 27)
+                .addComponent(setColor)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        labelFrame.setMinimumSize(new java.awt.Dimension(595, 377));
+
+        jScrollPane1.setViewportView(labelIgnoreList);
+
+        jScrollPane2.setViewportView(labelSeenList);
+
+        ignoreLabel.setText("Ignore");
+
+        addLabel.setText("Add");
+
+        colorLabel.setText("Color");
+        colorLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                colorLabelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout labelFrameLayout = new javax.swing.GroupLayout(labelFrame.getContentPane());
+        labelFrame.getContentPane().setLayout(labelFrameLayout);
+        labelFrameLayout.setHorizontalGroup(
+            labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, labelFrameLayout.createSequentialGroup()
+                .addGap(9, 9, 9)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addLabel, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(ignoreLabel, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(colorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
+        );
+        labelFrameLayout.setVerticalGroup(
+            labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, labelFrameLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addGroup(labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(labelFrameLayout.createSequentialGroup()
+                        .addComponent(addLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ignoreLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(colorLabel))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Distance Visualizer");
 
@@ -159,7 +289,7 @@ public class DistanceV extends javax.swing.JFrame {
             visPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(visPanelLayout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(409, Short.MAX_VALUE))
+                .addContainerGap(407, Short.MAX_VALUE))
         );
 
         button2D.setText("2D");
@@ -228,6 +358,13 @@ public class DistanceV extends javax.swing.JFrame {
 
         filter.setText("Filter");
 
+        labels.setText("Add/Ignore");
+        labels.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                labelsActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
 
         SVG.setText("Save as SVG");
@@ -292,9 +429,9 @@ public class DistanceV extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(positionBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(positionBox, 0, 151, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(15, 15, 15)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,7 +449,8 @@ public class DistanceV extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                     .addComponent(statistics)
                                     .addComponent(button2D)
-                                    .addComponent(filter))
+                                    .addComponent(filter)
+                                    .addComponent(labels))
                                 .addGap(49, 49, 49))))))
         );
         layout.setVerticalGroup(
@@ -336,7 +474,9 @@ public class DistanceV extends javax.swing.JFrame {
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(filter))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labels))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -423,6 +563,28 @@ public class DistanceV extends javax.swing.JFrame {
         }
            
     }//GEN-LAST:event_splitActionPerformed
+
+    private void labelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelsActionPerformed
+        // TODO add your handling code here:                                      
+        labelFrame.setVisible(true);  
+    }//GEN-LAST:event_labelsActionPerformed
+
+    private void colorLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorLabelActionPerformed
+        // TODO add your handling code here:
+        colorFrame.setVisible(true);
+    }//GEN-LAST:event_colorLabelActionPerformed
+
+    private void redFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_redFieldActionPerformed
+
+    private void setColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setColorActionPerformed
+        // TODO add your handling code here:
+        Double red = Double.parseDouble(redField.getText());
+        Double green = Double.parseDouble(greenField.getText());
+        Double blue = Double.parseDouble(blueField.getText());
+    }//GEN-LAST:event_setColorActionPerformed
+    
     
     /**
      * @param args the command line arguments
@@ -463,13 +625,19 @@ public class DistanceV extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem SVG;
+    private javax.swing.JButton addLabel;
     private javax.swing.JButton addLabels;
     private javax.swing.JButton addMatrix;
     private javax.swing.JButton addXY;
+    private javax.swing.JTextField blueField;
     private javax.swing.JToggleButton button2D;
+    private javax.swing.JFrame colorFrame;
+    private javax.swing.JButton colorLabel;
     private javax.swing.JTextField errorField;
     private javax.swing.JButton filter;
     private javax.swing.JCheckBoxMenuItem freeze;
+    private javax.swing.JTextField greenField;
+    private javax.swing.JButton ignoreLabel;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
@@ -478,15 +646,25 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jpg;
+    private javax.swing.JFrame labelFrame;
+    private javax.swing.JList<String> labelIgnoreList;
+    private javax.swing.JList<String> labelSeenList;
+    private javax.swing.JButton labels;
     private javax.swing.JCheckBoxMenuItem outline;
     private javax.swing.JTextField pearsonField;
     private javax.swing.JComboBox<String> positionBox;
+    private javax.swing.JTextField redField;
+    private javax.swing.JButton setColor;
     private javax.swing.JCheckBox split;
     private javax.swing.JComboBox<String> splitBox;
     private javax.swing.JButton statistics;
