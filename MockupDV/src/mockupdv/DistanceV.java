@@ -37,6 +37,10 @@ public class DistanceV extends javax.swing.JFrame {
         initComponents();
     }
     
+    double red = 1.0;
+    double green = 0.0;
+    double blue = 0.0;
+    
     List<String> allLabelsSelected = new LinkedList<>();
     List<String> allLabelsIgnored = new LinkedList<>();
     
@@ -580,9 +584,9 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void setColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setColorActionPerformed
         // TODO add your handling code here:
-        Double red = Double.parseDouble(redField.getText());
-        Double green = Double.parseDouble(greenField.getText());
-        Double blue = Double.parseDouble(blueField.getText());
+        red = Double.parseDouble(redField.getText());
+        green = Double.parseDouble(greenField.getText());
+        blue = Double.parseDouble(blueField.getText());
     }//GEN-LAST:event_setColorActionPerformed
     
     

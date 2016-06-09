@@ -41,6 +41,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
    
     java.util.List<xyzPos> xyzPosList;
     xyzPos positions = null;
+    DistanceV dv;
    
     double scale = 1;
     double angle = 0;
@@ -134,7 +135,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       // Setup perspective projection, with aspect ratio matches viewport
       gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
       gl.glLoadIdentity();             // reset projection matrix
-      glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
+      glu.gluPerspective(45.0, aspect, 0.01, 100.0); // fovy, aspect, zNear, zFar
             
       // Enable the model-view transform
       gl.glMatrixMode(GL_MODELVIEW);
@@ -154,14 +155,21 @@ public class Visualization extends GLJPanel implements GLEventListener {
       if (!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
       
       if(positions!=null && positions.x != null){
-          
-        Double camDistance = positions.maxZ + 30+scale;
-          
-        glu.gluLookAt(positions.centerX + angle, positions.centerY, camDistance, 
-            positions.centerX - shiftX, positions.centerY + shiftY, positions.centerZ, 
-            0, 1, 0);
+                  
+        double c = Math.max((positions.maxX - positions.minX)/2,
+                            (positions.maxY - positions.minY)/2);
+        double tmp1 = c/Math.sin(45.0/180.0*Math.PI);
+        Double camDistance = Math.sqrt(tmp1*tmp1 - c*c);;
+        
+        glu.gluLookAt((positions.centerX - shiftX)*scale + camDistance*Math.sin(angle), 
+                      (positions.centerY + shiftY)*scale, 
+                      positions.centerZ*scale + camDistance*Math.cos(angle), 
+                      (positions.centerX - shiftX)*scale, (positions.centerY + shiftY)*scale, positions.centerZ*scale, 
+                      0, 1, 0);
         this.repaint();
-                
+
+        gl.glScaled(scale, scale, scale);
+        
         for(int i = 0; i < positions.x.length; i++){
 
             gl.glPushMatrix();

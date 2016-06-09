@@ -56,17 +56,19 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
             int x = e.getX();
             int y = e.getY();
             if (dragging) {
-                double dx = (x - last_drag_x) / (double) ap.getWidth();
-                double dy = (y - last_drag_y) / (double) ap.getHeight();
+                double dx = (x - last_drag_x);
+                double dy = (y - last_drag_y);                
+                dx = dx / (double) ap.getWidth();
+                dy = dy / (double) ap.getHeight();              
                 
-//                total_offset_x += dx / ap.scale;
-//                total_offset_y += dy / ap.scale;
+                double inc_X = (dx / ap.scale);
+                double inc_Y = (dy / ap.scale);
                 
-                double inc_X = -(dx / ap.scale);
-                double inc_Y = -(dy / ap.scale);
+                double c = Math.max((ap.positions.maxX - ap.positions.minX)/2,
+                                    (ap.positions.maxY - ap.positions.minY)/2);
                 
-                ap.shiftX -= inc_X;
-                ap.shiftY -= inc_Y;
+                ap.shiftX += inc_X*c;
+                ap.shiftY += inc_Y*c;
             }
             last_drag_x = x;
             last_drag_y = y;
@@ -78,11 +80,8 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
             if (dragging) {
                 double dx = (x - last_right_drag_x) / (double) ap.getWidth();
                 double dy = (y - last_right_drag_y) / (double) ap.getHeight();
-                total_offset_x += dx / ap.scale;
-                total_offset_y += dy / ap.scale;
                 ap.angle += dx;// / ap.scale;
-//                ap.center_x = (ap.center_x - dx / ap.scale);
-//                ap.center_y = (ap.center_y - dy / ap.scale);
+
             }
             last_right_drag_x = x;
             last_right_drag_y = y;
@@ -98,8 +97,14 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
             ap.angle += e.getPreciseWheelRotation()/20;
         } else {
             // vertical scrolling:
+//            double factor = e.getWheelRotation();
+//            double newZoom = ap.scale + 0.5*factor;
+//            ap.scale = newZoom;           
+
             double factor = e.getWheelRotation();
-            double newZoom = ap.scale + 0.5*factor;
+            double newZoom = ap.scale * Math.pow(0.95, factor);
+            if (newZoom<0.01) newZoom = 0.01;
+            if (newZoom>100) newZoom = 100;
             ap.scale = newZoom;           
         }
     }
