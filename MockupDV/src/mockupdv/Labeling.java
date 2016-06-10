@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class Labeling {
     public List<String> names = null;
-    public List<String> dLabels = null;
-    public List<Double> cLabels = null;
+    public List<String> dLabels = null; //discrete
+    public List<Double> cLabels = null; //continous
     
     public Labeling(List<String> n, List<String> d, List<Double> c){
         names = n;

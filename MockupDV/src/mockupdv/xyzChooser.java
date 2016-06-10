@@ -22,9 +22,7 @@ import mockupdv.xyzPos;
  */
 
 public class xyzChooser extends xyzPos {
-    
-    public static List<String> names = new ArrayList<>();
-    
+        
     
     public xyzChooser(File file) throws Exception {
         

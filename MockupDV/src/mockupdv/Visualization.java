@@ -91,7 +91,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
    
    /** Constructor to setup the GUI for this Component */
    public Visualization() {
-        this.xyzPosList = new ArrayList<>();
+      this.xyzPosList = new ArrayList<>();
       this.addGLEventListener(this);
    }
    
@@ -167,7 +167,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
                       (positions.centerX - shiftX)*scale, (positions.centerY + shiftY)*scale, positions.centerZ*scale, 
                       0, 1, 0);
         this.repaint();
-
+               
         gl.glScaled(scale, scale, scale);
         
         for(int i = 0; i < positions.x.length; i++){

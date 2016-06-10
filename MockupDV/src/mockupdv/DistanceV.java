@@ -91,7 +91,6 @@ public class DistanceV extends javax.swing.JFrame {
         addMatrix = new javax.swing.JButton();
         split = new javax.swing.JCheckBox();
         splitBox = new javax.swing.JComboBox<>();
-        filter = new javax.swing.JButton();
         labels = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -293,7 +292,7 @@ public class DistanceV extends javax.swing.JFrame {
             visPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(visPanelLayout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(407, Short.MAX_VALUE))
+                .addContainerGap(408, Short.MAX_VALUE))
         );
 
         button2D.setText("2D");
@@ -359,8 +358,6 @@ public class DistanceV extends javax.swing.JFrame {
         splitBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         splitBox.setToolTipText("Separate the visualization, can only separate if there are only two labels.");
         splitBox.setEnabled(false);
-
-        filter.setText("Filter");
 
         labels.setText("Add/Ignore");
         labels.addActionListener(new java.awt.event.ActionListener() {
@@ -453,7 +450,6 @@ public class DistanceV extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                     .addComponent(statistics)
                                     .addComponent(button2D)
-                                    .addComponent(filter)
                                     .addComponent(labels))
                                 .addGap(49, 49, 49))))))
         );
@@ -476,11 +472,9 @@ public class DistanceV extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filter))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labels))
+                .addGap(7, 7, 7)
+                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -638,7 +632,6 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JFrame colorFrame;
     private javax.swing.JButton colorLabel;
     private javax.swing.JTextField errorField;
-    private javax.swing.JButton filter;
     private javax.swing.JCheckBoxMenuItem freeze;
     private javax.swing.JTextField greenField;
     private javax.swing.JButton ignoreLabel;

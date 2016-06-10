@@ -421,7 +421,6 @@
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="statistics" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="button2D" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="filter" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="labels" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
@@ -455,13 +454,10 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jComboBox2" min="-2" max="-2" attributes="0"/>
-                  <Component id="filter" min="-2" max="-2" attributes="0"/>
+                  <Component id="labels" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jComboBox3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="labels" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+              <Component id="jComboBox3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jComboBox4" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -502,7 +498,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jTabbedPane1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="407" max="32767" attributes="0"/>
+                  <EmptySpace pref="408" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -652,11 +648,6 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
-    </Component>
-    <Component class="javax.swing.JButton" name="filter">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Filter"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="labels">
       <Properties>

@@ -6,6 +6,7 @@
 package mockupdv;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import mockupdv.xyzChooser;
@@ -23,6 +24,7 @@ public class xyzPos {
     
     public Double centerX, centerY, centerZ;
     
+    public List<String> names = new ArrayList<>();
     
     void xPosition(List<Double> xpos){
         x = new Double[xpos.size()];
