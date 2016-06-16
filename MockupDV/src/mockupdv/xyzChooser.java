@@ -58,14 +58,9 @@ public class xyzChooser extends xyzPos {
             double number = Double.parseDouble(xp);
             xpos.add(number);
             double number2 = Double.parseDouble(yp);
-            ypos.add(number2);
-            
-            //if(st.hasMoreTokens()){
-                
-                double number3 = Double.parseDouble(zp);
-                zpos.add(number3);
-            
-            //}
+            ypos.add(number2);                           
+            double number3 = Double.parseDouble(zp);
+            zpos.add(number3);
             
             names.add(id);
 //            while(st.hasMoreTokens()) {

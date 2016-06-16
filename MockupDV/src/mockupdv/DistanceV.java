@@ -13,6 +13,9 @@ package mockupdv;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -80,18 +83,18 @@ public class DistanceV extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         button2D = new javax.swing.JToggleButton();
         positionBox = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
         statistics = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        labelBox1 = new javax.swing.JComboBox<>();
+        labelBox2 = new javax.swing.JComboBox<>();
+        labelBox3 = new javax.swing.JComboBox<>();
         addLabels = new javax.swing.JButton();
         addXY = new javax.swing.JButton();
         addMatrix = new javax.swing.JButton();
         split = new javax.swing.JCheckBox();
         splitBox = new javax.swing.JComboBox<>();
         labels = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         SVG = new javax.swing.JMenuItem();
@@ -302,9 +305,11 @@ public class DistanceV extends javax.swing.JFrame {
             }
         });
 
-        positionBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel1.setText("Position Controller:");
+        positionBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                positionBoxActionPerformed(evt);
+            }
+        });
 
         statistics.setText("Statistics");
         statistics.addActionListener(new java.awt.event.ActionListener() {
@@ -315,16 +320,11 @@ public class DistanceV extends javax.swing.JFrame {
 
         jLabel2.setText("Labels:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        labelBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                labelBox1ActionPerformed(evt);
             }
         });
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         addLabels.setText("Add Labels");
         addLabels.addActionListener(new java.awt.event.ActionListener() {
@@ -365,6 +365,8 @@ public class DistanceV extends javax.swing.JFrame {
                 labelsActionPerformed(evt);
             }
         });
+
+        jLabel1.setText("Position Controller:");
 
         jMenu1.setText("File");
 
@@ -414,44 +416,47 @@ public class DistanceV extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(visPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(178, 178, 178)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(61, 61, 61)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(split)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(splitBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(statistics)
+                            .addComponent(labels)
+                            .addComponent(button2D))
+                        .addGap(49, 49, 49))))
+            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(labelBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(217, 217, 217))
+            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(labelBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(217, 217, 217))
+            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(labelBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(217, 217, 217))
+            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(positionBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(217, 217, 217))
             .addGroup(layout.createSequentialGroup()
                 .addGap(55, 55, 55)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addLabels, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addXY, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addMatrix, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(47, 47, 47))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(positionBox, 0, 151, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jComboBox3, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jComboBox4, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(60, 60, 60)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(split)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(splitBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                    .addComponent(statistics)
-                                    .addComponent(button2D)
-                                    .addComponent(labels))
-                                .addGap(49, 49, 49))))))
+                .addComponent(addLabels, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addXY, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addMatrix, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(47, 47, 47))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,27 +465,29 @@ public class DistanceV extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(positionBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(button2D)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(statistics)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labels))
-                .addGap(7, 7, 7)
-                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(split)
-                    .addComponent(splitBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
+                        .addComponent(statistics)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labels)
+                        .addGap(40, 40, 40)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(split)
+                            .addComponent(splitBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(positionBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7)
+                        .addComponent(labelBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addLabels)
                     .addComponent(addXY)
@@ -492,13 +499,21 @@ public class DistanceV extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button2DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2DActionPerformed
-        // TODO add your handling code here:
-        
+        button2D.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent ev) {
+                if(ev.getStateChange()==ItemEvent.SELECTED){
+                    System.out.println("button is selected");
+                } else if(ev.getStateChange()==ItemEvent.DESELECTED){
+                    System.out.println("button is not selected");
+                }
+            }           
+        });       
     }//GEN-LAST:event_button2DActionPerformed
 
     private void addXYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addXYActionPerformed
         jFileChooser1.showOpenDialog(this);
         File xyzPosition = jFileChooser1.getSelectedFile();
+        positionBox.addItem(xyzPosition.getName());
         try {
             xyzChooser position = new xyzChooser(xyzPosition);
             ((Visualization)visPanel).addXyz(position);
@@ -526,7 +541,18 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_jpgActionPerformed
 
     private void addLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelsActionPerformed
-        int labelsFile = jFileChooser1.showOpenDialog(this);
+        jFileChooser1.showOpenDialog(this);
+        File labels = jFileChooser1.getSelectedFile();
+        labelBox1.addItem(labels.getName());
+        labelBox2.addItem(labels.getName());
+        labelBox3.addItem(labels.getName());
+        
+        try {
+            Labeling labelPos = new Labeling(labels);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
     }//GEN-LAST:event_addLabelsActionPerformed
 
     private void addMatrixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMatrixActionPerformed
@@ -544,9 +570,9 @@ public class DistanceV extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_statisticsUpdateActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void labelBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelBox1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_labelBox1ActionPerformed
 
     private void errorFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errorFieldActionPerformed
         // TODO add your handling code here:
@@ -582,6 +608,10 @@ public class DistanceV extends javax.swing.JFrame {
         green = Double.parseDouble(greenField.getText());
         blue = Double.parseDouble(blueField.getText());
     }//GEN-LAST:event_setColorActionPerformed
+
+    private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_positionBoxActionPerformed
     
     
     /**
@@ -635,9 +665,6 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem freeze;
     private javax.swing.JTextField greenField;
     private javax.swing.JButton ignoreLabel;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -653,6 +680,9 @@ public class DistanceV extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenuItem jpg;
+    private javax.swing.JComboBox<String> labelBox1;
+    private javax.swing.JComboBox<String> labelBox2;
+    private javax.swing.JComboBox<String> labelBox3;
     private javax.swing.JFrame labelFrame;
     private javax.swing.JList<String> labelIgnoreList;
     private javax.swing.JList<String> labelSeenList;
