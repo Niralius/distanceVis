@@ -47,6 +47,10 @@ public class Visualization extends GLJPanel implements GLEventListener {
     double angle = 0;
     double shiftX = 0;
     double shiftY = 0;
+    
+    double red = 1.0;
+    double green = 1.0;
+    double blue = 1.0;
    
    /** The entry main() method to setup the top-level container and animator */
 //   public static void main(String[] args) {
@@ -121,7 +125,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
       
-        Listener ml = new Listener(this);
+        Listener ml = new Listener(this); //Zooming rotating listener
         addMouseListener(ml);
         addMouseMotionListener(ml);
         addMouseWheelListener(ml);
@@ -135,7 +139,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       // Setup perspective projection, with aspect ratio matches viewport
       gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
       gl.glLoadIdentity();             // reset projection matrix
-      glu.gluPerspective(45.0, aspect, 0.01, 100.0); // fovy, aspect, zNear, zFar
+      glu.gluPerspective(45.0, aspect, 0.01, 1000000.0); // fovy, aspect, zNear, zFar
             
       // Enable the model-view transform
       gl.glMatrixMode(GL_MODELVIEW);
@@ -151,39 +155,39 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
 
-//      xyzPos positions = null;
       if (!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
       
       if(positions!=null && positions.x != null){
                   
         double c = Math.max((positions.maxX - positions.minX)/2,
                             (positions.maxY - positions.minY)/2);
+        float markerSize = (float)c/100; //size of the shapes making up the vis
         double tmp1 = c/Math.sin(45.0/180.0*Math.PI);
-        Double camDistance = Math.sqrt(tmp1*tmp1 - c*c);;
+        Double camDistance = Math.sqrt(tmp1*tmp1 - c*c); // Distance of the camera from the vis
         
-        glu.gluLookAt((positions.centerX - shiftX)*scale + camDistance*Math.sin(angle), 
+        glu.gluLookAt((positions.centerX - shiftX)*scale + camDistance*Math.sin(angle), //Eye
                       (positions.centerY + shiftY)*scale, 
                       positions.centerZ*scale + camDistance*Math.cos(angle), 
-                      (positions.centerX - shiftX)*scale, (positions.centerY + shiftY)*scale, positions.centerZ*scale, 
-                      0, 1, 0);
+                      (positions.centerX - shiftX)*scale, (positions.centerY + shiftY)*scale, positions.centerZ*scale, //Center
+                      0, 1, 0); //Up
         this.repaint();
                
-        gl.glScaled(scale, scale, scale);
+        gl.glScaled(scale, scale, scale); //essentially the zooming function
         
         for(int i = 0; i < positions.x.length; i++){
 
             gl.glPushMatrix();
-//            if () {
+//            if () {           //2D and 3D
 //                gl.glTranslated(positions.x[i], positions.y[i], 0);
 //            } else {
                 gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
 //            }
             gl.glBegin(GL_TRIANGLES);
-              //gl.glLoadName(i);
-              gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
-              gl.glVertex3f(0.0f, 0.2f, 0.0f);
-              gl.glVertex3f(-0.2f, -0.2f, 0.0f);
-              gl.glVertex3f(0.2f, -0.2f, 0.0f);
+              gl.glLoadName(i);
+              gl.glColor3d(red, green, blue); // White
+              gl.glVertex3f(0.0f, markerSize, 0.0f);
+              gl.glVertex3f(-markerSize, -markerSize, 0.0f);
+              gl.glVertex3f(markerSize, -markerSize, 0.0f);
             gl.glEnd();
             gl.glPopMatrix();
             

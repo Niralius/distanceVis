@@ -40,12 +40,16 @@ public class DistanceV extends javax.swing.JFrame {
         initComponents();
     }
     
-    double red = 1.0;
-    double green = 0.0;
-    double blue = 0.0;
+//    double red = 1.0;
+//    double green = 1.0;
+//    double blue = 1.0;
     
     List<String> allLabelsSelected = new LinkedList<>();
     List<String> allLabelsIgnored = new LinkedList<>();
+    
+    DefaultListModel model = new DefaultListModel();
+    
+    Visualization ap;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,7 +79,7 @@ public class DistanceV extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         labelIgnoreList = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        labelSeenList = new javax.swing.JList<>();
+        labelSeenList = new JList(model);
         ignoreLabel = new javax.swing.JButton();
         addLabel = new javax.swing.JButton();
         colorLabel = new javax.swing.JButton();
@@ -543,12 +547,17 @@ public class DistanceV extends javax.swing.JFrame {
     private void addLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelsActionPerformed
         jFileChooser1.showOpenDialog(this);
         File labels = jFileChooser1.getSelectedFile();
-        labelBox1.addItem(labels.getName());
-        labelBox2.addItem(labels.getName());
-        labelBox3.addItem(labels.getName());
+        
+        String[] labelTitle = labels.getName().split("-");
+        int size = labelTitle.length;
+        
+        labelBox1.addItem(labelTitle[size - 1]);
+        labelBox2.addItem(labelTitle[size - 1]);
+        labelBox3.addItem(labelTitle[size - 1]);
         
         try {
             Labeling labelPos = new Labeling(labels);
+            model.addElement(labels.getName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -596,6 +605,7 @@ public class DistanceV extends javax.swing.JFrame {
     private void colorLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorLabelActionPerformed
         // TODO add your handling code here:
         colorFrame.setVisible(true);
+        
     }//GEN-LAST:event_colorLabelActionPerformed
 
     private void redFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redFieldActionPerformed
@@ -604,9 +614,9 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void setColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setColorActionPerformed
         // TODO add your handling code here:
-        red = Double.parseDouble(redField.getText());
-        green = Double.parseDouble(greenField.getText());
-        blue = Double.parseDouble(blueField.getText());
+//        red = Double.parseDouble(redField.getText());
+//        green = Double.parseDouble(greenField.getText());
+//        blue = Double.parseDouble(blueField.getText());
     }//GEN-LAST:event_setColorActionPerformed
 
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed

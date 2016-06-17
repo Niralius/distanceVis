@@ -47,10 +47,10 @@ public class Labeling {
             
             if (areLabelsContinuous(label)){
                 double number = Double.parseDouble(label);
-                cLabels.add(number);
-                labelType = true;
+                cLabels.add(number); //continuous labels
+                labelType = true; 
             } else {
-                dLabels.add(label);
+                dLabels.add(label); // discrete labels
                 labelType = false;
             }
  
@@ -60,7 +60,7 @@ public class Labeling {
         
     }
     
-        public static boolean areLabelsContinuous(String labels) {
+        public static boolean areLabelsContinuous(String labels) { //determine type of labels
             if (!IsNumber.isNumber(labels)) {
                 return false;
             }
