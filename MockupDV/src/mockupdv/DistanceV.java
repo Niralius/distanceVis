@@ -47,7 +47,8 @@ public class DistanceV extends javax.swing.JFrame {
     List<String> allLabelsSelected = new LinkedList<>();
     List<String> allLabelsIgnored = new LinkedList<>();
     
-    DefaultListModel model = new DefaultListModel();
+    DefaultListModel selectedModel = new DefaultListModel();
+    DefaultListModel ignoredModel = new DefaultListModel();
     
     Visualization ap;
     
@@ -77,9 +78,9 @@ public class DistanceV extends javax.swing.JFrame {
         setColor = new javax.swing.JButton();
         labelFrame = new javax.swing.JFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
-        labelIgnoreList = new javax.swing.JList<>();
+        labelIgnoreList = new JList(ignoredModel);
         jScrollPane2 = new javax.swing.JScrollPane();
-        labelSeenList = new JList(model);
+        labelSeenList = new JList(selectedModel);
         ignoreLabel = new javax.swing.JButton();
         addLabel = new javax.swing.JButton();
         colorLabel = new javax.swing.JButton();
@@ -241,9 +242,19 @@ public class DistanceV extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(labelSeenList);
 
-        ignoreLabel.setText("Ignore");
+        ignoreLabel.setText("Ignore >>");
+        ignoreLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ignoreLabelActionPerformed(evt);
+            }
+        });
 
-        addLabel.setText("Add");
+        addLabel.setText("<< Add");
+        addLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addLabelActionPerformed(evt);
+            }
+        });
 
         colorLabel.setText("Color");
         colorLabel.addActionListener(new java.awt.event.ActionListener() {
@@ -258,20 +269,20 @@ public class DistanceV extends javax.swing.JFrame {
             labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, labelFrameLayout.createSequentialGroup()
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addLabel, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                     .addComponent(ignoreLabel, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(colorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
                 .addGap(12, 12, 12))
         );
         labelFrameLayout.setVerticalGroup(
             labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, labelFrameLayout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
                 .addGroup(labelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(labelFrameLayout.createSequentialGroup()
                         .addComponent(addLabel)
@@ -279,8 +290,8 @@ public class DistanceV extends javax.swing.JFrame {
                         .addComponent(ignoreLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(colorLabel))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
                 .addGap(14, 14, 14))
         );
 
@@ -557,7 +568,11 @@ public class DistanceV extends javax.swing.JFrame {
         
         try {
             Labeling labelPos = new Labeling(labels);
-            model.addElement(labels.getName());
+            if(!labelPos.labelType){
+                for(int i = 0; i< labelPos.discrete.size(); i++){
+                    selectedModel.addElement(labelPos.discrete.get(i));
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -622,6 +637,22 @@ public class DistanceV extends javax.swing.JFrame {
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_positionBoxActionPerformed
+
+    private void ignoreLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ignoreLabelActionPerformed
+        String selected = (String)labelSeenList.getSelectedValue(); //button to ignore labels
+        if (selected!=null){
+            ignoreLabel(selected);
+        }
+        
+    }//GEN-LAST:event_ignoreLabelActionPerformed
+
+    private void addLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelActionPerformed
+        // TODO add your handling code here:
+        String selected = (String)labelIgnoreList.getSelectedValue(); //button to add labels
+        if (selected!=null){
+            addLabel(selected);
+        }
+    }//GEN-LAST:event_addLabelActionPerformed
     
     
     /**
@@ -658,6 +689,51 @@ public class DistanceV extends javax.swing.JFrame {
             }
         });
         
+    }
+    
+    public void ignoreLabel(String labelToIgnore){
+        int[] fromindex = labelSeenList.getSelectedIndices();
+        List<String> from = labelSeenList.getSelectedValuesList();
+        
+        for(int i = 0; i < from.size(); i++){
+            ignoredModel.addElement(from.get(i));
+        }
+        for(int i = (fromindex.length-1); i >=0; i--){
+            selectedModel.remove(fromindex[i]);
+        }
+//        allLabelsSelected.remove(labelToIgnore);
+//        allLabelsIgnored.add(labelToIgnore);
+//        
+//        String []allLabelsSelectedArray = new String[allLabelsSelected.size()];
+//        for(int i = 0;i<allLabelsSelected.size();i++) allLabelsSelectedArray[i] = allLabelsSelected.get(i);
+//        String []allLabelsIgnoredArray = new String[allLabelsIgnored.size()];
+//        for(int i = 0;i<allLabelsIgnored.size();i++) allLabelsIgnoredArray[i] = allLabelsIgnored.get(i);
+//              
+//        labelSeenList.setListData(allLabelsSelectedArray);
+//        labelIgnoreList.setListData(allLabelsIgnoredArray);
+    }
+    
+    public void addLabel(String labelToIgnore) {      
+        int[] toindex = labelIgnoreList.getSelectedIndices();
+        List<String> to = labelIgnoreList.getSelectedValuesList();
+        
+        for(int i = 0; i < to.size(); i++){
+            selectedModel.addElement(to.get(i));
+        }
+        for(int i = (toindex.length-1); i >=0; i--){
+            ignoredModel.remove(toindex[i]);
+        }
+//        allLabelsSelected.add(labelToIgnore);
+//        allLabelsIgnored.remove(labelToIgnore);
+//        
+//        String []allLabelsSelectedArray = new String[allLabelsSelected.size()];
+//        for(int i = 0;i<allLabelsSelected.size();i++) allLabelsSelectedArray[i] = allLabelsSelected.get(i);
+//        String []allLabelsIgnoredArray = new String[allLabelsIgnored.size()];
+//        for(int i = 0;i<allLabelsIgnored.size();i++) allLabelsIgnoredArray[i] = allLabelsIgnored.get(i);
+//        
+//        labelSeenList.setListData(allLabelsSelectedArray);
+//        labelIgnoreList.setListData(allLabelsIgnoredArray);
+//        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

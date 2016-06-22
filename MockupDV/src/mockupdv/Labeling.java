@@ -19,9 +19,11 @@ import java.util.StringTokenizer;
 public class Labeling {
 
     public List<String> dLabels = new ArrayList<>(); //discrete
+    public List<String> discrete = new ArrayList<>();
     public List<Double> cLabels = new ArrayList<>(); //continous
     public boolean labelType;
     List<String> names = new ArrayList<>();
+    String first;
     
     public Labeling(File file) throws Exception{
         
@@ -57,6 +59,17 @@ public class Labeling {
             names.add(id);
             
         }
+        
+        if(!labelType){  //getting the proper labels for Discrete Type
+            discrete.add(dLabels.get(0));
+            for(int i = 0; i<dLabels.size(); i++){
+                if(!discrete.contains(dLabels.get(i))){
+                    discrete.add(dLabels.get(i));
+                }
+            }
+        }
+        System.out.println(discrete);
+        System.out.println(discrete.size());
         
     }
     
