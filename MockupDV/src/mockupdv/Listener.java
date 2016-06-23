@@ -67,8 +67,9 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
                 double c = Math.max((ap.positions.maxX - ap.positions.minX)/2,
                                     (ap.positions.maxY - ap.positions.minY)/2);
                 
-                ap.shiftX += inc_X*c;
-                ap.shiftY += inc_Y*c;
+                ap.shiftX += inc_X*c*Math.cos(ap.angle);
+                ap.shiftY -= inc_Y*c;
+                ap.shiftZ -= inc_X*c*Math.sin(ap.angle);
             }
             last_drag_x = x;
             last_drag_y = y;

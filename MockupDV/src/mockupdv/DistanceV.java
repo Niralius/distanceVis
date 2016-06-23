@@ -640,7 +640,7 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void ignoreLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ignoreLabelActionPerformed
         String selected = (String)labelSeenList.getSelectedValue(); //button to ignore labels
-        if (selected!=null){
+        if (selected!=null) {
             ignoreLabel(selected);
         }
         
@@ -649,7 +649,7 @@ public class DistanceV extends javax.swing.JFrame {
     private void addLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelActionPerformed
         // TODO add your handling code here:
         String selected = (String)labelIgnoreList.getSelectedValue(); //button to add labels
-        if (selected!=null){
+        if (selected!=null) {
             addLabel(selected);
         }
     }//GEN-LAST:event_addLabelActionPerformed

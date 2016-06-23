@@ -23,7 +23,8 @@ public class Labeling {
     public List<Double> cLabels = new ArrayList<>(); //continous
     public boolean labelType;
     List<String> names = new ArrayList<>();
-    String first;
+    
+    Double maxC, minC;
     
     public Labeling(File file) throws Exception{
         

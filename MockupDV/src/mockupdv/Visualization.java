@@ -47,6 +47,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
     double angle = 0;
     double shiftX = 0;
     double shiftY = 0;
+    double shiftZ = 0;
     
     double red = 1.0;
     double green = 1.0;
@@ -166,9 +167,11 @@ public class Visualization extends GLJPanel implements GLEventListener {
         Double camDistance = Math.sqrt(tmp1*tmp1 - c*c); // Distance of the camera from the vis
         
         glu.gluLookAt((positions.centerX - shiftX)*scale + camDistance*Math.sin(angle), //Eye
-                      (positions.centerY + shiftY)*scale, 
-                      positions.centerZ*scale + camDistance*Math.cos(angle), 
-                      (positions.centerX - shiftX)*scale, (positions.centerY + shiftY)*scale, positions.centerZ*scale, //Center
+                      (positions.centerY - shiftY)*scale, 
+                      (positions.centerZ - shiftZ)*scale + camDistance*Math.cos(angle), 
+                      (positions.centerX - shiftX)*scale, //center
+                      (positions.centerY - shiftY)*scale, 
+                      (positions.centerZ - shiftZ)*scale, 
                       0, 1, 0); //Up
         this.repaint();
                
