@@ -60,7 +60,7 @@ public class Labeling {
             names.add(id);
             
         }
-        
+                
         if(!labelType){  //getting the proper labels for Discrete Type
             discrete.add(dLabels.get(0));
             for(int i = 0; i<dLabels.size(); i++){
@@ -69,8 +69,8 @@ public class Labeling {
                 }
             }
         }
-        System.out.println(discrete);
-        System.out.println(discrete.size());
+//        System.out.println(discrete);
+//        System.out.println(discrete.size());
         
     }
     

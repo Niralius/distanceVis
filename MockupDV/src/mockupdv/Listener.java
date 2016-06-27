@@ -58,7 +58,7 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
             if (dragging) {
                 double dx = (x - last_drag_x);
                 double dy = (y - last_drag_y);                
-                dx = dx / (double) ap.getWidth();
+                dx = dx / (double) ap.getWidth();  
                 dy = dy / (double) ap.getHeight();              
                 
                 double inc_X = (dx / ap.scale);

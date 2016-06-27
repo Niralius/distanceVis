@@ -629,9 +629,9 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void setColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setColorActionPerformed
         // TODO add your handling code here:
-//        red = Double.parseDouble(redField.getText());
-//        green = Double.parseDouble(greenField.getText());
-//        blue = Double.parseDouble(blueField.getText());
+        ap.red = Double.parseDouble(redField.getText())/256;
+        ap.green = Double.parseDouble(greenField.getText())/256;
+        ap.blue = Double.parseDouble(blueField.getText())/256;
     }//GEN-LAST:event_setColorActionPerformed
 
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
