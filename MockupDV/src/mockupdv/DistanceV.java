@@ -335,11 +335,16 @@ public class DistanceV extends javax.swing.JFrame {
 
         jLabel2.setText("Labels:");
 
+        labelBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
         labelBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 labelBox1ActionPerformed(evt);
             }
         });
+
+        labelBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
+
+        labelBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
 
         addLabels.setText("Add Labels");
         addLabels.addActionListener(new java.awt.event.ActionListener() {
@@ -562,9 +567,9 @@ public class DistanceV extends javax.swing.JFrame {
         String[] labelTitle = labels.getName().split("-");
         int size = labelTitle.length;
         
-        labelBox1.addItem(labelTitle[size - 1]);
-        labelBox2.addItem(labelTitle[size - 1]);
-        labelBox3.addItem(labelTitle[size - 1]);
+//        labelBox1.addItem(labelTitle[size - 1]);
+//        labelBox2.addItem(labelTitle[size - 1]);
+//        labelBox3.addItem(labelTitle[size - 1]);
         
         try {
             Labeling labelPos = new Labeling(labels);
@@ -572,6 +577,14 @@ public class DistanceV extends javax.swing.JFrame {
                 for(int i = 0; i< labelPos.discrete.size(); i++){
                     selectedModel.addElement(labelPos.discrete.get(i));
                 }
+                
+                labelBox1.addItem("(D) " + labelTitle[size - 1]);
+                labelBox2.addItem("(D) " + labelTitle[size - 1]);
+                labelBox3.addItem("(D) " + labelTitle[size - 1]);
+            } else {
+                labelBox1.addItem("(C) " + labelTitle[size - 1]);
+                labelBox2.addItem("(C) " + labelTitle[size - 1]);
+                labelBox3.addItem("(C) " + labelTitle[size - 1]);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

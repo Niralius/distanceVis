@@ -23,6 +23,8 @@ import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import static mockupdv.xyzChooser.getMax;
 import static mockupdv.xyzChooser.getMin;
 
@@ -42,6 +44,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
     java.util.List<xyzPos> xyzPosList;
     xyzPos positions = null;
     DistanceV dv;
+    HashMap<String,Color> labelColors = new LinkedHashMap<>();
    
     double scale = 1;
     double angle = 0;
