@@ -11,4 +11,17 @@ package mockupdv;
  */
 public class Colors {
     
+    public double r, g, b;
+    
+    
+    
+    public double getR(){
+        return r;
+    }
+    public double getG(){
+        return g;
+    }
+    public double getB(){
+        return b;
+    }
 }

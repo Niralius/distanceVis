@@ -44,7 +44,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
     java.util.List<xyzPos> xyzPosList;
     xyzPos positions = null;
     DistanceV dv;
-    HashMap<String,Color> labelColors = new LinkedHashMap<>();
+    HashMap<String,Object> labelColors = new LinkedHashMap<>();
    
     double scale = 1;
     double angle = 0;
