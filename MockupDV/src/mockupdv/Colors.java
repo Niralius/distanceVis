@@ -5,23 +5,48 @@
  */
 package mockupdv;
 
+import java.io.File;
+import java.util.List;
+
+import mockupdv.Labeling;
 /**
  *
  * @author MichaelH
  */
-public class Colors {
+public class Colors{
     
-    public double r, g, b;
+    public Double r[], g[], b[];
     
-    
-    
-    public double getR(){
-        return r;
+    void assignColors(List<String> col){
+        r = new Double[col.size()];
+        g = new Double[col.size()];
+        b = new Double[col.size()];
+            r[0] = 1.0;//red
+            g[0] = 0.0;
+            b[0] = 0.0;
+            r[1] = 0.0;//green
+            g[1] = 1.0;
+            b[1] = 0.0;
+            r[2] = 0.0;//blue
+            g[2] = 0.0;
+            b[2] = 1.0;
+        
+        for(int i = 3; i<col.size(); i++){
+            r[i] = Math.random();
+            g[i] = Math.random();
+            b[i] = Math.random();
+        }
+        
+        
     }
-    public double getG(){
-        return g;
+    
+    public Double getR(int i){    
+        return r[i];
     }
-    public double getB(){
-        return b;
+    public Double getG(int i){
+        return g[i];
+    }
+    public Double getB(int i){
+        return b[i];
     }
 }

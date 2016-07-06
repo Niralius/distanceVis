@@ -22,14 +22,17 @@ import static com.jogamp.opengl.GL2ES3.GL_QUADS;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import static mockupdv.xyzChooser.getMax;
 import static mockupdv.xyzChooser.getMin;
 
 import mockupdv.xyzPos;
 import mockupdv.Listener;
+import mockupdv.Colors;
 
 /**
  *
@@ -41,11 +44,12 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //   private static final int CANVAS_HEIGHT = 240; // height of the drawable
 //   private static final int FPS = 60; // animator's target frames per second
    
+    TextRenderer renderer;
     java.util.List<xyzPos> xyzPosList;
     xyzPos positions = null;
+    Labeling labels;
     DistanceV dv;
-    HashMap<String,Object> labelColors = new LinkedHashMap<>();
-   
+    
     double scale = 1;
     double angle = 0;
     double shiftX = 0;
@@ -87,6 +91,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
       addMouseListener(ml);
       addMouseMotionListener(ml);
       addMouseWheelListener(ml);
+      
+      renderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36));
    }
 
    /**
@@ -132,6 +138,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
         double tmp1 = c/Math.sin(45.0/180.0*Math.PI);
         Double camDistance = Math.sqrt(tmp1*tmp1 - c*c); // Distance of the camera from the vis
         
+        gl.glPushMatrix();
         glu.gluLookAt((positions.centerX - shiftX)*scale + camDistance*Math.sin(angle), //EyeX
                       (positions.centerY - shiftY)*scale,                               //EyeY
                       (positions.centerZ - shiftZ)*scale + camDistance*Math.cos(angle), //EyeZ
@@ -152,7 +159,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
                     gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
 //            }
                 gl.glBegin(GL_TRIANGLES);
-                  gl.glLoadName(i);
+//                  gl.glLoadName(i);
                   gl.glColor3d(red, green, blue); // White
                   gl.glVertex3f(0.0f, markerSize, 0.0f);
                   gl.glVertex3f(-markerSize, -markerSize, 0.0f);
@@ -161,20 +168,53 @@ public class Visualization extends GLJPanel implements GLEventListener {
             gl.glPopMatrix();
             
         }
-        
-        glu.gluLookAt(0,0,30,
-                      0,0,0,
-                      0,1,0);
-        
-        gl.glBegin(GL_QUADS); // draw using quads
-           gl.glColor3f(1.0f, 0.0f, 0.0f);
-           gl.glVertex3f(-1.0f, 1.0f, 0.0f);
-           gl.glVertex3f(1.0f, 1.0f, 0.0f);
-           gl.glColor3f(0.0f, 1.0f, 0.0f);
-           gl.glVertex3f(1.0f, -1.0f, 0.0f);
-           gl.glVertex3f(-1.0f, -1.0f, 0.0f);
-        gl.glEnd();
-        
+        gl.glPopMatrix();
+
+//        if(dv.isDiscrete){
+            for(int i=0; i<Labeling.discrete.size(); i++){
+                
+                Object color = Labeling.labelColors.get(Labeling.discrete.get(i));
+                Double R = ((Colors)color).getR(i);
+                Double G = ((Colors)color).getG(i);
+                Double B = ((Colors)color).getB(i);
+                
+                gl.glPushMatrix();
+                gl.glDisable(GL_DEPTH_TEST); //legend
+                glu.gluLookAt(0,0,30,
+                              0,0,0,
+                              0,1,0);
+                gl.glTranslated(-17.5, 10-(i*1.7), 0);
+                gl.glBegin(GL_QUADS); // draw using quads
+                   gl.glColor3d(R, G, B);
+                   gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+                   gl.glVertex3f(1.0f, 1.0f, 0.0f);
+                   gl.glVertex3f(1.0f, -0.3f, 0.0f);
+                   gl.glVertex3f(-1.0f, -0.3f, 0.0f);
+                gl.glEnd();
+                
+                renderer.beginRendering(this.getWidth(), this.getHeight());
+                renderer.draw3D(Labeling.discrete.get(i), 60f, this.getHeight()-(i*30+30), 0f, 0.3f);
+                renderer.endRendering();
+                
+                gl.glEnable(GL_DEPTH_TEST);
+                gl.glPopMatrix();
+           }
+//        } else {
+//            gl.glDisable(GL_DEPTH_TEST);
+//            glu.gluLookAt(0,0,30,
+//                          0,0,0,
+//                          0,1,0);
+//            gl.glBegin(GL_QUADS);
+//                gl.glColor3f(1.0f, 0.0f, 0.0f);
+//                gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+//                gl.glVertex3f(1.0f, 1.0f, 0.0f);
+//                gl.glColor3f(0.0f, 1.0f, 0.0f);
+//                gl.glVertex3f(1.0f, -1.0f, 0.0f);
+//                gl.glVertex3f(-1.0f, -1.0f, 0.0f);
+//            gl.glEnd();
+//            gl.glEnable(GL_DEPTH_TEST);
+//        }
+//        
       }
 
    }

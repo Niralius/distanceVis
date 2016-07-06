@@ -46,6 +46,8 @@ public class DistanceV extends javax.swing.JFrame {
     
     List<String> allLabelsSelected = new LinkedList<>();
     List<String> allLabelsIgnored = new LinkedList<>();
+    String comboString;
+    boolean isDiscrete = true;
     
     DefaultListModel selectedModel = new DefaultListModel();
     DefaultListModel ignoredModel = new DefaultListModel();
@@ -567,10 +569,6 @@ public class DistanceV extends javax.swing.JFrame {
         String[] labelTitle = labels.getName().split("-");
         int size = labelTitle.length;
         
-//        labelBox1.addItem(labelTitle[size - 1]);
-//        labelBox2.addItem(labelTitle[size - 1]);
-//        labelBox3.addItem(labelTitle[size - 1]);
-        
         try {
             Labeling labelPos = new Labeling(labels);
             if(!labelPos.labelType){
@@ -608,7 +606,18 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_statisticsUpdateActionPerformed
 
     private void labelBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelBox1ActionPerformed
-        // TODO add your handling code here:
+        comboString = labelBox1.getSelectedItem().toString();
+        if(comboString.contains("(D)")){
+            labelBox2.setEnabled(false);
+            labelBox3.setEnabled(false);
+            isDiscrete = true;
+            split.setEnabled(true);
+        } else {
+            labelBox2.setEnabled(true);
+            labelBox3.setEnabled(true);
+            isDiscrete = false;
+            split.setEnabled(false);
+        }
     }//GEN-LAST:event_labelBox1ActionPerformed
 
     private void errorFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errorFieldActionPerformed
@@ -642,9 +651,11 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void setColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setColorActionPerformed
         // TODO add your handling code here:
-        ap.red = Double.parseDouble(redField.getText())/256;
-        ap.green = Double.parseDouble(greenField.getText())/256;
-        ap.blue = Double.parseDouble(blueField.getText())/256;
+//        List<String> selectedLabel = labelSeenList.getSelectedValuesList();
+//        for( String s:selectedLabel){
+//            changeLabelColor(s);
+//        }
+        
     }//GEN-LAST:event_setColorActionPerformed
 
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
@@ -748,7 +759,18 @@ public class DistanceV extends javax.swing.JFrame {
 //        labelIgnoreList.setListData(allLabelsIgnoredArray);
 //        
     }
-
+    
+//    public void changeLabelColor(String label){
+//   
+//        for(String s:discrete){
+//        double red = Double.parseDouble(redField.getText())/256;
+//        double green = Double.parseDouble(greenField.getText())/256;
+//        double blue = Double.parseDouble(blueField.getText())/256;
+//        
+//        Colors visC = new Colors(red, green, blue);
+//        
+//    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem SVG;
