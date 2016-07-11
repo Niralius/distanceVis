@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import mockupdv.Colors;
+import mockupdv.Pair;
 
 /**
  *
@@ -25,8 +26,10 @@ public class Labeling extends Colors{
     public List<String> dLabels = new ArrayList<>(); //discrete complete set
     public static List<String> discrete = new ArrayList<>(); //parsed list of labels
     public List<Double> cLabels = new ArrayList<>(); //continuous
-    public List<String> names = new ArrayList<>(); //label names (e.g. record-43242)
+    public List<String> labelNames = new ArrayList<>(); //label names (e.g. record-43242)
+    //public List<Pair<String,List<String>>> controller = new ArrayList<>();
     public boolean labelType;
+    public double contMax, contMin;
     
     public static HashMap<String,Object> labelColors = new LinkedHashMap<>();
     
@@ -37,19 +40,22 @@ public class Labeling extends Colors{
         
         BufferedReader br = new BufferedReader(new FileReader(file));
         //List<String> labelSet = new ArrayList<>();
+        boolean first = true;
+        int sizeOfMatrix = 0;
+        double m[][] = null;
         while(true) {
             String line = br.readLine();
             if (line==null) break;
-//            if (first) {
-//                StringTokenizer st = new StringTokenizer(line," \t");
-//                st.nextToken();
-//                while(st.hasMoreTokens()) {
-//                    String t = st.nextToken();
-//                    sizeOfMatrix++;
-//                }
-//                m = new double[sizeOfMatrix][sizeOfMatrix];
-//                first = false;
-//            }
+            if (first) {
+                StringTokenizer st = new StringTokenizer(line,"\t");
+                st.nextToken();
+                while(st.hasMoreTokens()) {
+                    String t = st.nextToken();
+                    sizeOfMatrix++;
+                }
+                m = new double[sizeOfMatrix][sizeOfMatrix];
+                first = false;
+            }
 
             StringTokenizer st = new StringTokenizer(line,"\t");
             String id = st.nextToken();
@@ -57,17 +63,17 @@ public class Labeling extends Colors{
             
             if (areLabelsContinuous(label)){
                 double number = Double.parseDouble(label);
-                cLabels.add(number); //continuous labels
+                cLabels.add(number); //continuous labels                
                 labelType = true; 
             } else {
                 dLabels.add(label); // discrete labels
                 labelType = false;
             }
  
-            names.add(id);
+            labelNames.add(id);
         }
                 
-        if(!labelType){  //getting the proper labels for Discrete Type
+        if(!labelType){  //getting the proper labels for Discrete Type (true if discrete)
             discrete.add(dLabels.get(0));
             for(int i = 0; i<dLabels.size(); i++){
                 if(!discrete.contains(dLabels.get(i))){
@@ -78,9 +84,11 @@ public class Labeling extends Colors{
                 labelsRGB.assignColors(discrete);
                 labelColors.put(discrete.get(i),labelsRGB);
             }
+            System.out.println(labelColors);
+        } else {
+            contMax = getMax(cLabels);
+            contMin = getMin(cLabels);
         }
-//        System.out.println(discrete);
-//        System.out.println(discrete.size());
        
     }
     
@@ -89,6 +97,24 @@ public class Labeling extends Colors{
             return false;
         }
     return true;
+    }
+    public static Double getMax(List<Double> inputArray){ 
+        Double maxValue = inputArray.get(0); 
+        for(int i=1;i < inputArray.size();i++){ 
+            if(inputArray.get(i) > maxValue){ 
+                maxValue = inputArray.get(i); 
+            } 
+        } 
+      return maxValue; 
+    }
+    public static Double getMin(List<Double> inputArray){ 
+        Double maxValue = inputArray.get(0); 
+        for(int i=1;i < inputArray.size();i++){ 
+            if(inputArray.get(i) < maxValue){ 
+                maxValue = inputArray.get(i); 
+            } 
+        } 
+      return maxValue; 
     }
     
 }

@@ -46,7 +46,7 @@ public class DistanceV extends javax.swing.JFrame {
     
     List<String> allLabelsSelected = new LinkedList<>();
     List<String> allLabelsIgnored = new LinkedList<>();
-    String comboString;
+    static String comboString;
     boolean isDiscrete = true;
     
     DefaultListModel selectedModel = new DefaultListModel();
@@ -345,8 +345,10 @@ public class DistanceV extends javax.swing.JFrame {
         });
 
         labelBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
+        labelBox2.setEnabled(false);
 
         labelBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
+        labelBox3.setEnabled(false);
 
         addLabels.setText("Add Labels");
         addLabels.addActionListener(new java.awt.event.ActionListener() {
@@ -572,7 +574,7 @@ public class DistanceV extends javax.swing.JFrame {
         try {
             Labeling labelPos = new Labeling(labels);
             if(!labelPos.labelType){
-                for(int i = 0; i< labelPos.discrete.size(); i++){
+                for(int i = 0; i<labelPos.discrete.size(); i++){
                     selectedModel.addElement(labelPos.discrete.get(i));
                 }
                 
@@ -587,7 +589,7 @@ public class DistanceV extends javax.swing.JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+
     }//GEN-LAST:event_addLabelsActionPerformed
 
     private void addMatrixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMatrixActionPerformed
@@ -607,17 +609,18 @@ public class DistanceV extends javax.swing.JFrame {
 
     private void labelBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelBox1ActionPerformed
         comboString = labelBox1.getSelectedItem().toString();
-        if(comboString.contains("(D)")){
+        if("-".equals(comboString) || comboString.contains("(D)")){
             labelBox2.setEnabled(false);
             labelBox3.setEnabled(false);
             isDiscrete = true;
             split.setEnabled(true);
-        } else {
+        } else if(comboString.contains("(C)")){          
             labelBox2.setEnabled(true);
             labelBox3.setEnabled(true);
             isDiscrete = false;
             split.setEnabled(false);
         }
+        ((Visualization)visPanel).repaint();
     }//GEN-LAST:event_labelBox1ActionPerformed
 
     private void errorFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errorFieldActionPerformed
@@ -763,12 +766,13 @@ public class DistanceV extends javax.swing.JFrame {
 //    public void changeLabelColor(String label){
 //   
 //        for(String s:discrete){
-//        double red = Double.parseDouble(redField.getText())/256;
-//        double green = Double.parseDouble(greenField.getText())/256;
-//        double blue = Double.parseDouble(blueField.getText())/256;
+//            double red = Double.parseDouble(redField.getText())/256;
+//            double green = Double.parseDouble(greenField.getText())/256;
+//            double blue = Double.parseDouble(blueField.getText())/256;
+//
+//            Colors visC = new Colors(red, green, blue);
 //        
-//        Colors visC = new Colors(red, green, blue);
-//        
+//        }
 //    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

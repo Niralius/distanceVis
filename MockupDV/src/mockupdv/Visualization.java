@@ -23,6 +23,7 @@ import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import com.jogamp.opengl.util.awt.TextRenderer;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,27 +46,29 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //   private static final int FPS = 60; // animator's target frames per second
    
     TextRenderer renderer;
-    java.util.List<xyzPos> xyzPosList;
+    List<xyzPos> xyzPosList;
     xyzPos positions = null;
+    List<Colors> colorList;
+    Colors colors;
+    // ...
     Labeling labels;
     DistanceV dv;
+    
+    double buckets = 9;
     
     double scale = 1;
     double angle = 0;
     double shiftX = 0;
     double shiftY = 0;
     double shiftZ = 0;
-    
-    double red = 1.0;
-    double green = 1.0;
-    double blue = 1.0;
-   
+      
    // Setup OpenGL Graphics Renderer
    
    private GLU glu;  // for the GL Utility
    
    /** Constructor to setup the GUI for this Component */
    public Visualization() {
+      this.colorList = new ArrayList<>();
       this.xyzPosList = new ArrayList<>();
       this.addGLEventListener(this);
    }
@@ -92,7 +95,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       addMouseMotionListener(ml);
       addMouseWheelListener(ml);
       
-      renderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36));
+      renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 36));
    }
 
    /**
@@ -128,7 +131,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
 
-      if (!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
+      if(!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
       
       if(positions!=null && positions.x != null){
                   
@@ -149,34 +152,35 @@ public class Visualization extends GLJPanel implements GLEventListener {
         this.repaint();
                        
         for(int i = 0; i < positions.x.length; i++){
+                gl.glPushMatrix();
+                gl.glScaled(scale, scale, scale); //essentially the zooming function
 
-            gl.glPushMatrix();
-            gl.glScaled(scale, scale, scale); //essentially the zooming function
-            
-//            if () {           //2D and 3D
-//                gl.glTranslated(positions.x[i], positions.y[i], 0);
-//            } else {
-                    gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-//            }
-                gl.glBegin(GL_TRIANGLES);
-//                  gl.glLoadName(i);
-                  gl.glColor3d(red, green, blue); // White
-                  gl.glVertex3f(0.0f, markerSize, 0.0f);
-                  gl.glVertex3f(-markerSize, -markerSize, 0.0f);
-                  gl.glVertex3f(markerSize, -markerSize, 0.0f);
-                gl.glEnd();
-            gl.glPopMatrix();
-            
+    //            if () {           //2D and 3D
+    //                gl.glTranslated(positions.x[i], positions.y[i], 0);
+    //            } else {
+                        gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+    //            }
+                    gl.glBegin(GL_TRIANGLES);
+                      gl.glLoadName(i);
+                      gl.glColor3d(1, 0, 0); // White
+                      gl.glVertex3f(0.0f, markerSize, 0.0f);
+                      gl.glVertex3f(-markerSize, -markerSize, 0.0f);
+                      gl.glVertex3f(markerSize, -markerSize, 0.0f);
+                    gl.glEnd();
+                gl.glPopMatrix();
         }
+      }
         gl.glPopMatrix();
 
 //        if(dv.isDiscrete){
             for(int i=0; i<Labeling.discrete.size(); i++){
-                
-                Object color = Labeling.labelColors.get(Labeling.discrete.get(i));
-                Double R = ((Colors)color).getR(i);
-                Double G = ((Colors)color).getG(i);
-                Double B = ((Colors)color).getB(i);
+//                
+//                Object color = Labeling.labelColors.get(Labeling.discrete.get(i));
+//                Double R = ((Colors)color).getR(i);
+//                Double G = ((Colors)color).getG(i);
+//                Double B = ((Colors)color).getB(i);
+
+                colors.assignColors(Labeling.discrete);
                 
                 gl.glPushMatrix();
                 gl.glDisable(GL_DEPTH_TEST); //legend
@@ -185,7 +189,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
                               0,1,0);
                 gl.glTranslated(-17.5, 10-(i*1.7), 0);
                 gl.glBegin(GL_QUADS); // draw using quads
-                   gl.glColor3d(R, G, B);
+                   gl.glColor3d(colors.r[i], colors.g[i], colors.b[i]);
                    gl.glVertex3f(-1.0f, 1.0f, 0.0f);
                    gl.glVertex3f(1.0f, 1.0f, 0.0f);
                    gl.glVertex3f(1.0f, -0.3f, 0.0f);
@@ -215,7 +219,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //            gl.glEnable(GL_DEPTH_TEST);
 //        }
 //        
-      }
+      
 
    }
 
