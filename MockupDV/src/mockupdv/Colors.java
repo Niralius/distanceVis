@@ -17,7 +17,7 @@ public class Colors{
     
     public Double r[], g[], b[];
     
-    void assignColors(List<String> col){
+    public Colors(List<String> col){
         r = new Double[col.size()];
         g = new Double[col.size()];
         b = new Double[col.size()];

@@ -21,7 +21,7 @@ import mockupdv.Pair;
  *
  * @author MichaelH
  */
-public class Labeling extends Colors{
+public class Labeling{
 
     public List<String> dLabels = new ArrayList<>(); //discrete complete set
     public static List<String> discrete = new ArrayList<>(); //parsed list of labels
@@ -34,7 +34,7 @@ public class Labeling extends Colors{
     public static HashMap<String,Object> labelColors = new LinkedHashMap<>();
     
     Double maxC, minC;
-    Colors labelsRGB = new Colors();
+    Colors labelsRGB;
     
     public Labeling(File file) throws Exception{
         
@@ -75,16 +75,16 @@ public class Labeling extends Colors{
                 
         if(!labelType){  //getting the proper labels for Discrete Type (true if discrete)
             discrete.add(dLabels.get(0));
+            Colors labelsRGB = new Colors(dLabels);
             for(int i = 0; i<dLabels.size(); i++){
                 if(!discrete.contains(dLabels.get(i))){
                     discrete.add(dLabels.get(i));
                 }
             }
-            for(int i = 0; i<discrete.size(); i++){
-                labelsRGB.assignColors(discrete);
-                labelColors.put(discrete.get(i),labelsRGB);
+            for(int i = 0; i<dLabels.size(); i++){
+                labelColors.put(dLabels.get(i),labelsRGB);
             }
-            System.out.println(labelColors);
+            //System.out.println(labelColors);
         } else {
             contMax = getMax(cLabels);
             contMin = getMin(cLabels);

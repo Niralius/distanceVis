@@ -130,7 +130,9 @@ public class Visualization extends GLJPanel implements GLEventListener {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
-
+      
+      Colors colors = new Colors(Labeling.discrete);
+      
       if(!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
       
       if(positions!=null && positions.x != null){
@@ -180,7 +182,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //                Double G = ((Colors)color).getG(i);
 //                Double B = ((Colors)color).getB(i);
 
-                colors.assignColors(Labeling.discrete);
+//                Colors colors = new Colors(Labeling.discrete);
                 
                 gl.glPushMatrix();
                 gl.glDisable(GL_DEPTH_TEST); //legend
