@@ -1,9 +1,9 @@
+package mockupdv;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mockupdv;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,13 +23,14 @@ import mockupdv.Pair;
  */
 public class Labeling extends Colors{
 
-    public List<String> dLabels = new ArrayList<>(); //discrete complete set
+    public static List<String> dLabels = new ArrayList<>(); //discrete complete set
     public static List<String> discrete = new ArrayList<>(); //parsed list of labels
     public List<Double> cLabels = new ArrayList<>(); //continuous
     public List<String> labelNames = new ArrayList<>(); //label names (e.g. record-43242)
     //public List<Pair<String,List<String>>> controller = new ArrayList<>();
     public boolean labelType;
     public double contMax, contMin;
+    public ArrayList<String> colors = new ArrayList<String>();
     
     public static HashMap<String,Object> labelColors = new LinkedHashMap<>();
     
@@ -76,6 +77,7 @@ public class Labeling extends Colors{
             discrete.add(dLabels.get(0));
 //            Colors labelsRGB = new Colors(dLabels);
             for(int i = 0; i<dLabels.size(); i++){
+            	colors.add(dLabels.get(i));
                 if(!discrete.contains(dLabels.get(i))){
                     discrete.add(dLabels.get(i));
                 }

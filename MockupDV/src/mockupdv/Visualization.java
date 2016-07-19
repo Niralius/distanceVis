@@ -1,39 +1,39 @@
+package mockupdv;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mockupdv;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.FPSAnimator;
-import static com.jogamp.opengl.GL.*;  // GL constants
-import static com.jogamp.opengl.GL2.*; // GL2 constants
+// GL constants
+import static com.jogamp.opengl.GL.GL_COLOR_BUFFER_BIT;
+import static com.jogamp.opengl.GL.GL_DEPTH_BUFFER_BIT;
+import static com.jogamp.opengl.GL.GL_DEPTH_TEST;
+import static com.jogamp.opengl.GL.GL_LEQUAL;
+import static com.jogamp.opengl.GL.GL_NICEST;
+import static com.jogamp.opengl.GL.GL_TRIANGLES;
 import static com.jogamp.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
 import static com.jogamp.opengl.GL2ES3.GL_QUADS;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import static mockupdv.xyzChooser.getMax;
-import static mockupdv.xyzChooser.getMin;
 
-import mockupdv.xyzPos;
-import mockupdv.Listener;
-import mockupdv.Colors;
+import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
  *
@@ -61,6 +61,9 @@ public class Visualization extends GLJPanel implements GLEventListener {
     double shiftX = 0;
     double shiftY = 0;
     double shiftZ = 0;
+    
+    ArrayList<String> cleanLabels = new ArrayList<String>();
+    
       
    // Setup OpenGL Graphics Renderer
    
@@ -80,8 +83,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
     * to perform one-time initialization. Run only once.
     */
    @Override
-   public void init(GLAutoDrawable drawable) {
-      GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
+   public void init(GLAutoDrawable drawable) {	   
+	  GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
       glu = new GLU();                         // get GL Utilities
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // set background (clear) color
       gl.glClearDepth(1.0f);      // set clear depth value to farthest
@@ -96,6 +99,15 @@ public class Visualization extends GLJPanel implements GLEventListener {
       addMouseWheelListener(ml);
       
       renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 36));
+      
+      // Generate labels so the coloring method can read
+      try {
+  		cleanLabels = getLabel();
+  	  } catch (FileNotFoundException e) {
+  		e.printStackTrace();
+  	  } catch (IOException e) {
+  		e.printStackTrace();
+  	  }
    }
 
    /**
@@ -164,7 +176,11 @@ public class Visualization extends GLJPanel implements GLEventListener {
     //            }
                     gl.glBegin(GL_TRIANGLES);
                       gl.glLoadName(i);
-                      gl.glColor3d(1, 0, 0); // White
+                      String label = Labeling.dLabels.get(i);
+                      System.out.println(label + i);
+                      double[] colors = toColor(label);
+                      gl.glColor3d(colors[0], colors[1], colors[2]);
+                      
                       gl.glVertex3f(0.0f, markerSize, 0.0f);
                       gl.glVertex3f(-markerSize, -markerSize, 0.0f);
                       gl.glVertex3f(markerSize, -markerSize, 0.0f);
@@ -183,15 +199,17 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //                Double B = ((Colors)color).getB(i);
 
 //                Colors colors = new Colors(Labeling.discrete);
-                
                 gl.glPushMatrix();
                 gl.glDisable(GL_DEPTH_TEST); //legend
                 glu.gluLookAt(0,0,30,
                               0,0,0,
                               0,1,0);
                 gl.glTranslated(-17.5, 10-(i*1.7), 0);
+                String label = Labeling.discrete.get(i);
+                double[] colors =toColor(label);
+                
                 gl.glBegin(GL_QUADS); // draw using quads
-                   gl.glColor3d(colors.r[i], colors.g[i], colors.b[i]);
+                   gl.glColor3d(colors[0], colors[1], colors[2]);
                    gl.glVertex3f(-1.0f, 1.0f, 0.0f);
                    gl.glVertex3f(1.0f, 1.0f, 0.0f);
                    gl.glVertex3f(1.0f, -0.3f, 0.0f);
@@ -224,6 +242,44 @@ public class Visualization extends GLJPanel implements GLEventListener {
       
 
    }
+   
+   private ArrayList<String> getLabel() throws FileNotFoundException, IOException {
+	   ArrayList<String> toReturn = new ArrayList<String>();
+	   File f = new File("cleanLabels.txt");
+		try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		    	line = line.replaceAll("[0-9]", "");
+		    	line = line.replaceAll("	", "");
+		    		toReturn.add(line);
+		    	}
+		    }
+		
+		return toReturn;
+   }
+   
+   public static double[] toColor(String input) {
+	   try {
+	        java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+	        byte[] array = md.digest(input.getBytes());
+	        StringBuffer sb = new StringBuffer();
+	        for (int i = 0; i < array.length; ++i) {
+	          sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+	       }
+	        String md5 = sb.toString();
+	        double[] toReturn = new double[3];
+	        int index = 0;
+	        for (int i = 0; i < 21; i+=10) {
+	        	String sub = md5.substring(i,i + 10);
+	        	sub = sub.replaceAll("[^0-9]", "");
+	        	toReturn[index] = Double.parseDouble("0." + sub);
+	        	index++;
+	        }
+	        return toReturn;
+	    } catch (java.security.NoSuchAlgorithmException e) {
+	    }
+	    return new double[3];
+	}
 
    /** 
     * Called back before the OpenGL context is destroyed. Release resource such as buffers. 
