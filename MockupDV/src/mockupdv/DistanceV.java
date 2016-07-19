@@ -1,32 +1,21 @@
+package mockupdv;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/**
- *
- * @author MichaelH
- */
-package mockupdv;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.*;
-import static mockupdv.matrixChooser.matrixD;
-import mockupdv.xyzChooser;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 
 public class DistanceV extends javax.swing.JFrame {
     
@@ -646,7 +635,17 @@ public class DistanceV extends javax.swing.JFrame {
     private void colorLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorLabelActionPerformed
         // TODO add your handling code here:
         colorFrame.setVisible(true);
+        HashMap<String, double[]> colorCodes = Visualization.colorCodes;
         
+        String selection = labelSeenList.getSelectedValue();
+    	if (selection == null) {
+    		selection = labelIgnoreList.getSelectedValue();
+    	}
+    	
+    	double[] colors = colorCodes.get(selection);
+    	redField.setText((int)(colors[0]*255 - 0.16667) + "");
+    	greenField.setText((int)(colors[1]*255 - 0.16667) + "");
+    	blueField.setText((int)(colors[2]*255 - 0.16667) + "");
     }//GEN-LAST:event_colorLabelActionPerformed
 
     private void redFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redFieldActionPerformed
@@ -658,8 +657,17 @@ public class DistanceV extends javax.swing.JFrame {
 //        List<String> selectedLabel = labelSeenList.getSelectedValuesList();
 //        for( String s:selectedLabel){
 //            changeLabelColor(s);
-//        }
-        
+//        }    	
+    	String selection = labelSeenList.getSelectedValue();
+    	if (selection == null) {
+    		selection = labelIgnoreList.getSelectedValue();
+    	}
+    	String r = redField.getText();
+    	String g = greenField.getText();
+    	String b = blueField.getText();
+    	double convert = 0.0039215485; // y = mx + b (convert is 'm'). glColor3d takes double input from 0.0 - 1.0.
+    	Visualization.colorCodes.replace(selection, new double[]{Double.parseDouble(r)*convert, Double.parseDouble(g)*convert, Double.parseDouble(b)*convert});
+    	colorFrame.dispatchEvent(new WindowEvent(colorFrame, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_setColorActionPerformed
 
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
@@ -729,6 +737,7 @@ public class DistanceV extends javax.swing.JFrame {
         for(int i = (fromindex.length-1); i >=0; i--){
             selectedModel.remove(fromindex[i]);
         }
+        Visualization.toIgnore = (ArrayList<String>) from;
 //        allLabelsSelected.remove(labelToIgnore);
 //        allLabelsIgnored.add(labelToIgnore);
 //        
@@ -743,6 +752,7 @@ public class DistanceV extends javax.swing.JFrame {
     
     public void addLabel(String labelToIgnore) {      
         int[] toindex = labelIgnoreList.getSelectedIndices();
+
         List<String> to = labelIgnoreList.getSelectedValuesList();
         
         for(int i = 0; i < to.size(); i++){
@@ -750,6 +760,10 @@ public class DistanceV extends javax.swing.JFrame {
         }
         for(int i = (toindex.length-1); i >=0; i--){
             ignoredModel.remove(toindex[i]);
+        }
+        
+        for (String s : to) {
+        	Visualization.toIgnore.remove(s);
         }
 //        allLabelsSelected.add(labelToIgnore);
 //        allLabelsIgnored.remove(labelToIgnore);

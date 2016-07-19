@@ -47,8 +47,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //   private static final int FPS = 60; // animator's target frames per second
    
     TextRenderer renderer;
-    List<xyzPos> xyzPosList;
-    xyzPos positions = null;
+    static List<xyzPos> xyzPosList;
+    static xyzPos positions = null;
     List<Colors> colorList;
     Colors colors = null;
     // ...
@@ -63,7 +63,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
     double shiftY = 0;
     double shiftZ = 0;
     
-    HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
+    static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
+    static ArrayList<String> toIgnore = new ArrayList<String>();
     
       
    // Setup OpenGL Graphics Renderer
@@ -157,6 +158,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
                       0, 1, 0); //Up vector
         this.repaint();
         for(int i = 0; i < positions.x.length; i++){
+        	String label = Labeling.dLabels.get(i);
+        	if (!toIgnore.contains(label)) { // Seeing if point is on the ignore list
                 gl.glPushMatrix();
                 gl.glScaled(scale, scale, scale); //essentially the zooming function
 
@@ -165,10 +168,10 @@ public class Visualization extends GLJPanel implements GLEventListener {
     //            } else {
                         gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
     //            }
-                    gl.glBegin(GL_TRIANGLES);
+                      gl.glBegin(GL_TRIANGLES);
                       gl.glLoadName(i);
                       
-                      String label = Labeling.dLabels.get(i);
+                      // Getting color data if it exists, else creating color data
                       double[] colors = new double[3];
                       if (colorCodes.containsKey(label)) {
                     	  colors = colorCodes.get(label);
@@ -179,12 +182,12 @@ public class Visualization extends GLJPanel implements GLEventListener {
                       }
                       
                       gl.glColor3d(colors[0], colors[1], colors[2]);
-                      
                       gl.glVertex3f(0.0f, markerSize, 0.0f);
                       gl.glVertex3f(-markerSize, -markerSize, 0.0f);
                       gl.glVertex3f(markerSize, -markerSize, 0.0f);
                     gl.glEnd();
                 gl.glPopMatrix();
+        	}
         }
       }
         gl.glPopMatrix();
@@ -262,7 +265,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	    }
 	    return new double[3];
 	}
-
+   
    /** 
     * Called back before the OpenGL context is destroyed. Release resource such as buffers. 
     */
@@ -272,6 +275,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
     public void addXyz(xyzPos pos) {
        xyzPosList.add(pos);
     }
+    
     public void addColor(Colors color) {
        colorList.add(color);
     }
