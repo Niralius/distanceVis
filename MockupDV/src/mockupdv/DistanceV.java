@@ -573,6 +573,7 @@ public class DistanceV extends javax.swing.JFrame {
         
         try {
             Labeling labelPos = new Labeling(labels);
+            ((Visualization)visPanel).addColor(labelPos);
             if(!labelPos.labelType){
                 for(int i = 0; i<labelPos.discrete.size(); i++){
                     selectedModel.addElement(labelPos.discrete.get(i));

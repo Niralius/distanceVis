@@ -49,7 +49,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
     List<xyzPos> xyzPosList;
     xyzPos positions = null;
     List<Colors> colorList;
-    Colors colors;
+    Colors colors = null;
     // ...
     Labeling labels;
     DistanceV dv;
@@ -131,9 +131,9 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
       
-      Colors colors = new Colors(Labeling.discrete);
       
       if(!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
+      if(!colorList.isEmpty()) colors = colorList.get(0);
       
       if(positions!=null && positions.x != null){
                   
@@ -231,7 +231,10 @@ public class Visualization extends GLJPanel implements GLEventListener {
    @Override
    public void dispose(GLAutoDrawable drawable) { }
    
-   public void addXyz(xyzPos pos) {
+    public void addXyz(xyzPos pos) {
        xyzPosList.add(pos);
-   }
+    }
+    public void addColor(Colors color) {
+       colorList.add(color);
+    }
 }

@@ -21,7 +21,7 @@ import mockupdv.Pair;
  *
  * @author MichaelH
  */
-public class Labeling{
+public class Labeling extends Colors{
 
     public List<String> dLabels = new ArrayList<>(); //discrete complete set
     public static List<String> discrete = new ArrayList<>(); //parsed list of labels
@@ -34,7 +34,6 @@ public class Labeling{
     public static HashMap<String,Object> labelColors = new LinkedHashMap<>();
     
     Double maxC, minC;
-    Colors labelsRGB;
     
     public Labeling(File file) throws Exception{
         
@@ -75,16 +74,13 @@ public class Labeling{
                 
         if(!labelType){  //getting the proper labels for Discrete Type (true if discrete)
             discrete.add(dLabels.get(0));
-            Colors labelsRGB = new Colors(dLabels);
+//            Colors labelsRGB = new Colors(dLabels);
             for(int i = 0; i<dLabels.size(); i++){
                 if(!discrete.contains(dLabels.get(i))){
                     discrete.add(dLabels.get(i));
                 }
             }
-            for(int i = 0; i<dLabels.size(); i++){
-                labelColors.put(dLabels.get(i),labelsRGB);
-            }
-            //System.out.println(labelColors);
+            applyColor(discrete);
         } else {
             contMax = getMax(cLabels);
             contMin = getMin(cLabels);
@@ -115,6 +111,49 @@ public class Labeling{
             } 
         } 
       return maxValue; 
+    }
+    
+    void applyColor(List<String> disc){
+        r = new Double[disc.size()];
+        g = new Double[disc.size()];
+        b = new Double[disc.size()];
+        if(disc.size() == 1){
+            r[0] = 1.0;
+            g[0] = 0.0;
+            b[0] = 0.0;
+        } else if(disc.size() == 2){
+            r[0] = 1.0;
+            g[0] = 0.0;
+            b[0] = 0.0;
+            r[1] = 0.0;
+            g[1] = 1.0;
+            b[1] = 0.0;
+        } else if(disc.size() == 3){
+            r[0] = 1.0;//red
+            g[0] = 0.0;
+            b[0] = 0.0;
+            r[1] = 0.0;//green
+            g[1] = 1.0;
+            b[1] = 0.0;
+            r[2] = 0.0;//blue
+            g[2] = 0.0;
+            b[2] = 1.0;
+        } else if(disc.size() > 3){
+            r[0] = 1.0;//red
+            g[0] = 0.0;
+            b[0] = 0.0;
+            r[1] = 0.0;//green
+            g[1] = 1.0;
+            b[1] = 0.0;
+            r[2] = 0.0;//blue
+            g[2] = 0.0;
+            b[2] = 1.0;
+            for(int i = 3; i<disc.size(); i++){
+                r[i] = Math.random();
+                g[i] = Math.random();
+                b[i] = Math.random();
+            }
+        }
     }
     
 }
