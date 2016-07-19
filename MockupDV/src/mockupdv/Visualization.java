@@ -243,12 +243,10 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	       }
 	        String md5 = sb.toString();
 	        double[] toReturn = new double[3];
-	        int index = 0;
 	        for (int i = 0; i < 21; i+=10) {
 	        	String sub = md5.substring(i, i + 10);
 	        	sub = sub.replaceAll("[^0-9]", "");
-	        	toReturn[index] = Double.parseDouble("0." + sub);
-	        	index++;
+	        	toReturn[i/10] = Double.parseDouble("0." + sub);
 	        }
 	        return toReturn;
 	    } catch (java.security.NoSuchAlgorithmException e) {
