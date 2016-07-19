@@ -99,15 +99,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
       addMouseWheelListener(ml);
       
       renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 36));
-      
-      // Generate labels so the coloring method can read
-      try {
-  		cleanLabels = getLabel();
-  	  } catch (FileNotFoundException e) {
-  		e.printStackTrace();
-  	  } catch (IOException e) {
-  		e.printStackTrace();
-  	  }
    }
 
    /**
@@ -176,9 +167,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
     //            }
                     gl.glBegin(GL_TRIANGLES);
                       gl.glLoadName(i);
-                      String label = Labeling.dLabels.get(i);
-                      System.out.println(label + i);
-                      double[] colors = toColor(label);
+                      
+                      double[] colors = toColor(Labeling.dLabels.get(i));
                       gl.glColor3d(colors[0], colors[1], colors[2]);
                       
                       gl.glVertex3f(0.0f, markerSize, 0.0f);
@@ -205,8 +195,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
                               0,0,0,
                               0,1,0);
                 gl.glTranslated(-17.5, 10-(i*1.7), 0);
-                String label = Labeling.discrete.get(i);
-                double[] colors =toColor(label);
+                
+                double[] colors =toColor(Labeling.discrete.get(i));
                 
                 gl.glBegin(GL_QUADS); // draw using quads
                    gl.glColor3d(colors[0], colors[1], colors[2]);
@@ -243,21 +233,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
 
    }
    
-   private ArrayList<String> getLabel() throws FileNotFoundException, IOException {
-	   ArrayList<String> toReturn = new ArrayList<String>();
-	   File f = new File("cleanLabels.txt");
-		try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-		    String line;
-		    while ((line = br.readLine()) != null) {
-		    	line = line.replaceAll("[0-9]", "");
-		    	line = line.replaceAll("	", "");
-		    		toReturn.add(line);
-		    	}
-		    }
-		
-		return toReturn;
-   }
-   
    public static double[] toColor(String input) {
 	   try {
 	        java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
@@ -270,7 +245,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	        double[] toReturn = new double[3];
 	        int index = 0;
 	        for (int i = 0; i < 21; i+=10) {
-	        	String sub = md5.substring(i,i + 10);
+	        	String sub = md5.substring(i, i + 10);
 	        	sub = sub.replaceAll("[^0-9]", "");
 	        	toReturn[index] = Double.parseDouble("0." + sub);
 	        	index++;
