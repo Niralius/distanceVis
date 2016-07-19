@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -62,7 +63,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
     double shiftY = 0;
     double shiftZ = 0;
     
-    ArrayList<String> cleanLabels = new ArrayList<String>();
+    HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
     
       
    // Setup OpenGL Graphics Renderer
@@ -155,7 +156,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
                       (positions.centerZ - shiftZ)*scale, //centerZ
                       0, 1, 0); //Up vector
         this.repaint();
-                       
         for(int i = 0; i < positions.x.length; i++){
                 gl.glPushMatrix();
                 gl.glScaled(scale, scale, scale); //essentially the zooming function
@@ -168,7 +168,16 @@ public class Visualization extends GLJPanel implements GLEventListener {
                     gl.glBegin(GL_TRIANGLES);
                       gl.glLoadName(i);
                       
-                      double[] colors = toColor(Labeling.dLabels.get(i));
+                      String label = Labeling.dLabels.get(i);
+                      double[] colors = new double[3];
+                      if (colorCodes.containsKey(label)) {
+                    	  colors = colorCodes.get(label);
+                      } else {
+						  // New label
+						  colors = toColor(label);
+                    	  colorCodes.put(label, colors);
+                      }
+                      
                       gl.glColor3d(colors[0], colors[1], colors[2]);
                       
                       gl.glVertex3f(0.0f, markerSize, 0.0f);
@@ -196,7 +205,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
                               0,1,0);
                 gl.glTranslated(-17.5, 10-(i*1.7), 0);
                 
-                double[] colors =toColor(Labeling.discrete.get(i));
+                double[] colors = colorCodes.get(Labeling.discrete.get(i));
                 
                 gl.glBegin(GL_QUADS); // draw using quads
                    gl.glColor3d(colors[0], colors[1], colors[2]);
