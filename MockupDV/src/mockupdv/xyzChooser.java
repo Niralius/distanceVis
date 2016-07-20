@@ -63,6 +63,7 @@ public class xyzChooser extends xyzPos {
             zpos.add(number3);
             
             names.add(id);
+            System.out.println(names.size());
 //            while(st.hasMoreTokens()) {
 //                String t = st.nextToken();
 //                m[i][j] = Double.parseDouble(t);
