@@ -5,17 +5,30 @@ package mockupdv;
  * and open the template in the editor.
  */
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JList;
+
+import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 
 public class DistanceV extends javax.swing.JFrame {
     
@@ -384,6 +397,11 @@ public class DistanceV extends javax.swing.JFrame {
         jMenu1.setText("File");
 
         SVG.setText("Save as SVG");
+        SVG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                svgActionPerformed(evt);
+            }
+        });
         jMenu1.add(SVG);
 
         jpg.setText("Save as .jpg");
@@ -511,16 +529,25 @@ public class DistanceV extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    boolean firstTime = true;
     private void button2DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2DActionPerformed
-        button2D.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent ev) {
-                if(ev.getStateChange()==ItemEvent.SELECTED){
-                    System.out.println("button is selected");
-                } else if(ev.getStateChange()==ItemEvent.DESELECTED){
-                    System.out.println("button is not selected");
-                }
-            }           
-        });       
+    	if (firstTime) {
+    		// User activated 2D mode for first time. Insert code processing that event as usual here.
+    		
+    		firstTime = false;
+    	} else {
+	    	button2D.addItemListener(new ItemListener() {
+	            public void itemStateChanged(ItemEvent ev) {
+	                if(ev.getStateChange()==ItemEvent.SELECTED){
+	                    System.out.println("button is selected");
+	                } else if(ev.getStateChange()==ItemEvent.DESELECTED){
+	                    System.out.println("button is not selected");
+	                }
+	            }           
+	        });
+    	}
+    	
+    	
     }//GEN-LAST:event_button2DActionPerformed
 
     private void addXYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addXYActionPerformed
@@ -531,7 +558,13 @@ public class DistanceV extends javax.swing.JFrame {
             xyzChooser position = new xyzChooser(xyzPosition);
             ((Visualization)visPanel).addXyz(position);
             ((Visualization)visPanel).repaint();
-            //System.out.println(DistanceChooser.xpos.get(0));
+            
+            String s = xyzPosition.getName();
+        	Visualization.selectedPositionName = s;
+        	Visualization.positionController.put(s, Visualization.positionController.size());
+            positionBox.setSelectedItem(s);
+        	System.out.println(s);
+        	//System.out.println(DistanceChooser.xpos.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -548,9 +581,45 @@ public class DistanceV extends javax.swing.JFrame {
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0);
     }//GEN-LAST:event_ExitActionPerformed
+    
+    private String getSaveLocation(String type) {
+    	JFileChooser c = new JFileChooser();
+    	type = "." + type;
+    	int rVal = c.showSaveDialog(this);
+    	if (rVal == JFileChooser.APPROVE_OPTION) {
+    		String saveLocation = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
+    		
+    		// Makes sure user typed in ".svg" || ".jpg" as file extension
+    		if (!saveLocation.substring(saveLocation.length()-type.length(), saveLocation.length()).equals(type)){
+    			saveLocation += type;
+    		}
+    		
+    		return saveLocation;
+    	}
+    	return "";
+    }
 
+    private void svgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jpgActionPerformed
+    	SVGGraphics2D g2 = new SVGGraphics2D((int)visPanel.getSize().getWidth(), (int)visPanel.getSize().getHeight());
+    	visPanel.paint(g2);
+    	try {
+    		String saveLocation = getSaveLocation("svg");
+			SVGUtils.writeToSVG(new File(saveLocation), g2.getSVGElement());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+    }//GEN-LAST:event_jpgActionPerformed
+    
     private void jpgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jpgActionPerformed
-        // TODO add your handling code here:
+    	BufferedImage bufImage = new BufferedImage(visPanel.getSize().width, visPanel.getSize().height,BufferedImage.TYPE_INT_RGB);
+        visPanel.paint(bufImage.createGraphics());
+	     try{
+	    	String saveLocation = getSaveLocation("jpg");
+	        ImageIO.write(bufImage, "jpg", new File(saveLocation));
+	     } catch(Exception e){
+	    	 e.printStackTrace();
+	     }
     }//GEN-LAST:event_jpgActionPerformed
 
     private void addLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelsActionPerformed
@@ -628,12 +697,11 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_splitActionPerformed
 
     private void labelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelsActionPerformed
-        // TODO add your handling code here:                                      
+        // TODO add your handling code here: 
         labelFrame.setVisible(true);  
     }//GEN-LAST:event_labelsActionPerformed
 
     private void colorLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorLabelActionPerformed
-        // TODO add your handling code here:
         colorFrame.setVisible(true);
         HashMap<String, double[]> colorCodes = Visualization.colorCodes;
         
@@ -643,9 +711,9 @@ public class DistanceV extends javax.swing.JFrame {
     	}
     	
     	double[] colors = colorCodes.get(selection);
-    	redField.setText((int)(colors[0]*255 - 0.16667) + "");
-    	greenField.setText((int)(colors[1]*255 - 0.16667) + "");
-    	blueField.setText((int)(colors[2]*255 - 0.16667) + "");
+    	redField.setText(Math.round(colors[0]*255 - (1/3)) + "");
+    	greenField.setText(Math.round(colors[1]*255 - (1/3)) + "");
+    	blueField.setText(Math.round(colors[2]*255 - (1/3)) + "");
     }//GEN-LAST:event_colorLabelActionPerformed
 
     private void redFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redFieldActionPerformed
@@ -653,7 +721,6 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_redFieldActionPerformed
 
     private void setColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setColorActionPerformed
-        // TODO add your handling code here:
 //        List<String> selectedLabel = labelSeenList.getSelectedValuesList();
 //        for( String s:selectedLabel){
 //            changeLabelColor(s);
@@ -662,16 +729,32 @@ public class DistanceV extends javax.swing.JFrame {
     	if (selection == null) {
     		selection = labelIgnoreList.getSelectedValue();
     	}
-    	String r = redField.getText();
-    	String g = greenField.getText();
-    	String b = blueField.getText();
+    	
+    	// Gets RGB vals from User and makes sure they aren't out of bounds
+    	String rText = redField.getText();
+    	double r = Double.parseDouble(rText);
+    	if (r > 256) r = 255;
+    	else if (r < -1) r = 0;
+    	
+    	String gText = greenField.getText();
+    	double g = Double.parseDouble(gText);
+    	if (g > 256) g = 255;
+    	else if (g < -1) g = 0;
+    	
+    	String bText = blueField.getText();
+    	double b = Double.parseDouble(bText);
+    	if (b > 256) b = 255;
+    	else if (b < -1) b = 0;
+    	
     	double convert = 0.0039215485; // y = mx + b (convert is 'm'). glColor3d takes double input from 0.0 - 1.0.
-    	Visualization.colorCodes.replace(selection, new double[]{Double.parseDouble(r)*convert, Double.parseDouble(g)*convert, Double.parseDouble(b)*convert});
+    	Visualization.colorCodes.replace(selection, new double[]{r*convert, g*convert, b*convert});
+    	
     	colorFrame.dispatchEvent(new WindowEvent(colorFrame, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_setColorActionPerformed
 
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
-        // TODO add your handling code here:
+    	String s = (String)positionBox.getSelectedItem();
+    	Visualization.selectedPositionName = s;
     }//GEN-LAST:event_positionBoxActionPerformed
 
     private void ignoreLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ignoreLabelActionPerformed
@@ -683,9 +766,8 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_ignoreLabelActionPerformed
 
     private void addLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelActionPerformed
-        // TODO add your handling code here:
         String selected = (String)labelIgnoreList.getSelectedValue(); //button to add labels
-        if (selected!=null) {
+        if (selected != null) {
             addLabel(selected);
         }
     }//GEN-LAST:event_addLabelActionPerformed
@@ -723,8 +805,7 @@ public class DistanceV extends javax.swing.JFrame {
             public void run() {
                 new DistanceV().setVisible(true);
             }
-        });
-        
+        });        
     }
     
     public void ignoreLabel(String labelToIgnore){

@@ -19,15 +19,10 @@ import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 
 import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -48,7 +43,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
    
     TextRenderer renderer;
     static List<xyzPos> xyzPosList;
-    static xyzPos positions = null;
+    xyzPos positions = null;
     List<Colors> colorList;
     Colors colors = null;
     // ...
@@ -65,6 +60,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
     
     static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
     static ArrayList<String> toIgnore = new ArrayList<String>();
+    static HashMap<String, Integer> positionController = new HashMap<String, Integer>();
+    static String selectedPositionName = "";
     
       
    // Setup OpenGL Graphics Renderer
@@ -130,14 +127,15 @@ public class Visualization extends GLJPanel implements GLEventListener {
    /**
     * Called back by the animator to perform rendering.
     */
+   
+   int a = 0;
    @Override
    public void display(GLAutoDrawable drawable) {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
       
-      
-      if(!xyzPosList.isEmpty()) positions = xyzPosList.get(0);
+      if(!xyzPosList.isEmpty()) positions = xyzPosList.get(positionController.get(selectedPositionName));
       if(!colorList.isEmpty()) colors = colorList.get(0);
       
       if(positions!=null && positions.x != null){
@@ -241,8 +239,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
 //            gl.glEnable(GL_DEPTH_TEST);
 //        }
 //        
-      
-
    }
    
    public static double[] toColor(String input) {
