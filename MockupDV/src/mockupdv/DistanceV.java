@@ -724,7 +724,7 @@ public class DistanceV extends javax.swing.JFrame {
 			split.setEnabled(false);
 			try {
 				Visualization.labels = Visualization.allTheLabels.get(comboString);
-				Visualization.continuousLabelsToShow.add(comboString);
+				Visualization.continuousLabelsToShow.add(0, comboString);
 				visPanel.repaint();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -733,18 +733,18 @@ public class DistanceV extends javax.swing.JFrame {
 			// Do something?
 			// Currently throws up.
 		}
+		labelBox1.remove(0);
 		((Visualization) visPanel).repaint();
 	}// GEN-LAST:event_labelBox1ActionPerformed
 
 	private void labelBox2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
-		if (("-").equals(comboString)) {
-			// Do something?
-			// Currently throws up.
-			
+		if (("-").equals(labelBox2.getSelectedItem().toString())) {
+			// remove this entry.
+			Visualization.continuousLabelsToShow.add(1, "");
 		} else {
 			try {
 				comboString = labelBox2.getSelectedItem().toString();
-				Visualization.continuousLabelsToShow.add(comboString);
+				Visualization.continuousLabelsToShow.add(1, comboString);
 				visPanel.repaint();
 			} catch (NullPointerException e) {
 				// e.printStackTrace();
@@ -754,13 +754,12 @@ public class DistanceV extends javax.swing.JFrame {
 	}// GEN-LAST:event_labelBox2ActionPerformed
 
 	private void labelBox3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
-		if (("-").equals(comboString)) {
-			// Do something?
-			// Currently throws up.
+		if (("-").equals(labelBox3.getSelectedItem().toString())) {
+			Visualization.continuousLabelsToShow.add(2, "");
 		} else {
 			try {
 				comboString = labelBox3.getSelectedItem().toString();
-				Visualization.continuousLabelsToShow.add(comboString);
+				Visualization.continuousLabelsToShow.add(2, comboString);
 				visPanel.repaint();
 			} catch (NullPointerException e) {
 				// e.printStackTrace();

@@ -28,7 +28,6 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
@@ -64,7 +63,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	static HashMap<String, Integer> positionController = new HashMap<String, Integer>();
 	static String selectedPositionName = "";
 	static HashMap<String, Labeling> allTheLabels = new HashMap<String, Labeling>();
-	static ArrayList<String> continuousLabelsToShow = new ArrayList<String>();
+	static ArrayList<String> continuousLabelsToShow = new ArrayList<String>(3);
 
 	// Setup OpenGL Graphics Renderer
 
@@ -188,8 +187,8 @@ public class Visualization extends GLJPanel implements GLEventListener {
 						gl.glLoadName(i);
 
 						// Veeery expensive circles
-						//GLUquadric point = glu.gluNewQuadric();
-						//glu.gluSphere(point, 0.05, 16, 16);
+						// GLUquadric point = glu.gluNewQuadric();
+						// glu.gluSphere(point, 0.05, 16, 16);
 
 						// Getting color data if it exists, else creating color
 						// data
@@ -211,47 +210,58 @@ public class Visualization extends GLJPanel implements GLEventListener {
 					}
 				} else {
 					// Is Continuous.
-					for (int contI = 0; contI < continuousLabelsToShow.size(); contI++) {
-						List<Double> colors = allTheLabels.get(continuousLabelsToShow.get(contI)).cLabels;
-						gl.glPushMatrix();
-						gl.glScaled(scale, scale, scale); // essentially the
-															// zooming function
-	
-						// if () { //2D and 3D
-						// gl.glTranslated(positions.x[i], positions.y[i], 0);
-						// } else {
-						gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-						// }
-						gl.glBegin(GL_TRIANGLES);
-						gl.glLoadName(i);
-	
-						// Veeery expensive circles
-						//GLUquadric point = glu.gluNewQuadric();
-						//glu.gluSphere(point, 0.05, 16, 16);
-	
-						// Time to get them colors...
-						Double toAdd = colors.get(i);
-	
-						double r = 1, g = 1, b = 1;
-						
-						double min = allTheLabels.get(continuousLabelsToShow.get(contI)).contMin;
-						double max = allTheLabels.get(continuousLabelsToShow.get(contI)).contMax;
-						
-						double colorVal = (toAdd - min) / (max - min);
-						
-						switch (contI) {
-							case 0: r = colorVal; break;
-							case 1: g = colorVal; break;
-							case 2: b = colorVal; break;
+					try {
+						for (int contI = 0; contI < continuousLabelsToShow.size(); contI++) {
+							List<Double> colors = allTheLabels.get(continuousLabelsToShow.get(contI)).cLabels;
+							gl.glPushMatrix();
+							gl.glScaled(scale, scale, scale); // essentially the
+																// zooming
+																// function
+
+							// if () { //2D and 3D
+							// gl.glTranslated(positions.x[i], positions.y[i],
+							// 0);
+							// } else {
+							gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+							// }
+							gl.glBegin(GL_TRIANGLES);
+							gl.glLoadName(i);
+
+							// Veeery expensive circles
+							// GLUquadric point = glu.gluNewQuadric();
+							// glu.gluSphere(point, 0.05, 16, 16);
+
+							// Time to get them colors...
+							Double toAdd = colors.get(i);
+
+							double r = 1, g = 1, b = 1;
+
+							double min = allTheLabels.get(continuousLabelsToShow.get(contI)).contMin;
+							double max = allTheLabels.get(continuousLabelsToShow.get(contI)).contMax;
+
+							double colorVal = (toAdd - min) / (max - min);
+
+							switch (contI) {
+							case 0:
+								r = colorVal;
+								break;
+							case 1:
+								g = colorVal;
+								break;
+							case 2:
+								b = colorVal;
+								break;
+							}
+
+							gl.glColor3d(r, g, b);
+							gl.glVertex3f(0.0f, markerSize, 0.0f);
+							gl.glVertex3f(-markerSize, -markerSize, 0.0f);
+							gl.glVertex3f(markerSize, -markerSize, 0.0f);
+							gl.glEnd();
+							gl.glPopMatrix();
 						}
-							
-	
-						gl.glColor3d(r, g, b);
-						gl.glVertex3f(0.0f, markerSize, 0.0f);
-						gl.glVertex3f(-markerSize, -markerSize, 0.0f);
-						gl.glVertex3f(markerSize, -markerSize, 0.0f);
-						gl.glEnd();
-						gl.glPopMatrix();
+					} catch (NullPointerException e) {
+						// User left the middle box blank...
 					}
 				}
 			}
