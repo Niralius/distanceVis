@@ -20,10 +20,7 @@ import mockupdv.Labeling;
  * @author MichaelH
  */
 
-public class matrixChooser {
-    
-    public static List<String> names = new ArrayList<>();   
-    public static List<String> matrixD = new ArrayList<>();
+public class matrixChooser extends matrixPos{
     
     public matrixChooser(File file) throws Exception {
         
@@ -37,7 +34,7 @@ public class matrixChooser {
             String line = br.readLine();
             if (line==null) break;
             if (first) {
-                StringTokenizer st = new StringTokenizer(line," \t");
+                StringTokenizer st = new StringTokenizer(line,"\t");
                 st.nextToken();
                 while(st.hasMoreTokens()) {
                     String t = st.nextToken();
@@ -48,7 +45,7 @@ public class matrixChooser {
                 first = false;
             }
 
-            StringTokenizer st = new StringTokenizer(line," \t");
+            StringTokenizer st = new StringTokenizer(line,"\t");
             int j = 0;
             String id = st.nextToken();
             names.add(id);
@@ -59,12 +56,13 @@ public class matrixChooser {
             }
             i++;
         }
-/**
-*          System.out.println(names);
-*          System.out.println(names.size());
-*
-*          System.out.println(matrixD);
-*/
+
+          System.out.println(names);
+          System.out.println(names.size());
+
+          System.out.println(matrixD);
+          System.out.println(matrixD.size());
+
     }
     
 }
