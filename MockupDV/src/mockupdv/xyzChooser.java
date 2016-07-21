@@ -54,7 +54,7 @@ public class xyzChooser extends xyzPos {
             String id = st.nextToken();
             String xp = st.nextToken();
             String yp = st.nextToken();
-            String zp = (st.hasMoreTokens() ? st.nextToken():"-12");
+            String zp = (st.hasMoreTokens() ? st.nextToken():"0");
             double number = Double.parseDouble(xp);
             xpos.add(number);
             double number2 = Double.parseDouble(yp);

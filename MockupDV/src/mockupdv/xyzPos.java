@@ -1,11 +1,12 @@
+package mockupdv;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mockupdv;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import mockupdv.xyzChooser;
  *
  * @author MichaelH
  */
-public class xyzPos {
+public class xyzPos implements Serializable {
     
     public Double x[], y[], z[];
     
@@ -25,7 +26,7 @@ public class xyzPos {
     public Double centerX, centerY, centerZ;
     
     public List<String> names = new ArrayList<>();
-    
+
 //    void xPosition(List<Double> xpos){
 //        x = new Double[xpos.size()];
 //        for(int i = 0; i<xpos.size(); i++ )
@@ -60,9 +61,8 @@ public class xyzPos {
             if(inputArray[i] < minValue){ 
                 minValue = inputArray[i]; 
             } 
-        } 
+    } 
     return minValue; 
-  } 
-    
+  }   
     
 }

@@ -49,14 +49,15 @@ public class Visualization extends GLJPanel implements GLEventListener {
     // ...
     Labeling labels;
     DistanceV dv;
+    static Listener ml;
     
     double buckets = 9;
     
-    double scale = 1;
-    double angle = 0;
-    double shiftX = 0;
-    double shiftY = 0;
-    double shiftZ = 0;
+    static double scale = 1;
+    static double angle = 0;
+    static double shiftX = 0;
+    static double shiftY = 0;
+    static double shiftZ = 0;
     
     static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
     static ArrayList<String> toIgnore = new ArrayList<String>();
@@ -92,12 +93,16 @@ public class Visualization extends GLJPanel implements GLEventListener {
       gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // best perspective correction
       gl.glShadeModel(GL_SMOOTH); // blends colors nicely, and smoothes out lighting
       
-      Listener ml = new Listener(this); //Zooming & rotating listener
+      ml = new Listener(this); //Zooming & rotating listener
       addMouseListener(ml);
       addMouseMotionListener(ml);
       addMouseWheelListener(ml);
       
       renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 36));
+   }
+   
+   public void resetCamera() {
+	   ml = new Listener(this);
    }
 
    /**
@@ -134,7 +139,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
       GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
       gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
       gl.glLoadIdentity();  // reset the model-view matrix
-      
       if(!xyzPosList.isEmpty()) positions = xyzPosList.get(positionController.get(selectedPositionName));
       if(!colorList.isEmpty()) colors = colorList.get(0);
       

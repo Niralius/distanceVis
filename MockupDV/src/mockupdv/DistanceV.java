@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
 
@@ -531,23 +532,44 @@ public class DistanceV extends javax.swing.JFrame {
 
     boolean firstTime = true;
     private void button2DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2DActionPerformed
+    	String name = (String) positionBox.getSelectedItem();
+    	// Default zPos is set to -12.0 for some reason (Changed to 0.0 since it makes more sense)... See xyzChooser.java
+    	double defaultZPosition = 0;
     	if (firstTime) {
     		// User activated 2D mode for first time. Insert code processing that event as usual here.
-    		
+			xyzPos toFlatten = Visualization.xyzPosList.get(Visualization.positionController.get(name));
+			toFlatten = SerializationUtils.clone(toFlatten);
+    		for (int i = 0; i < toFlatten.z.length; i++) {
+    			toFlatten.z[i] = defaultZPosition;
+    		}
+    		Visualization.xyzPosList.add(toFlatten);
+    		Visualization.positionController.put(name + "2D", Visualization.xyzPosList.size()-1);
+    		Visualization.selectedPositionName = name + "2D";
+    		resetCamera();
     		firstTime = false;
-    	} else {
-	    	button2D.addItemListener(new ItemListener() {
-	            public void itemStateChanged(ItemEvent ev) {
-	                if(ev.getStateChange()==ItemEvent.SELECTED){
-	                    System.out.println("button is selected");
-	                } else if(ev.getStateChange()==ItemEvent.DESELECTED){
-	                    System.out.println("button is not selected");
-	                }
-	            }           
-	        });
     	}
-    	
-    	
+	    button2D.addItemListener(new ItemListener() {
+	    	public void itemStateChanged(ItemEvent ev) {
+	    		String name = (String) positionBox.getSelectedItem();
+	    		if(ev.getStateChange()==ItemEvent.SELECTED){
+	    			if (Visualization.positionController.containsKey(name + "2D")) {
+	    				Visualization.selectedPositionName = name + "2D";
+	    			} else {
+	    				xyzPos toFlatten = Visualization.xyzPosList.get(Visualization.positionController.get(name));
+	    				toFlatten = SerializationUtils.clone(toFlatten);
+	    				for (int i = 0; i < toFlatten.z.length; i++) {
+	               			toFlatten.z[i] = defaultZPosition;
+	               		}
+	               		Visualization.xyzPosList.add(toFlatten);
+	               		Visualization.positionController.put(name + "2D", Visualization.xyzPosList.size()-1);
+	               		Visualization.selectedPositionName = name + "2D";
+	    			}
+	    		} else if(ev.getStateChange()==ItemEvent.DESELECTED){
+	    			Visualization.selectedPositionName = name;
+	    		}
+	    		resetCamera();
+	    	}
+	    });
     }//GEN-LAST:event_button2DActionPerformed
 
     private void addXYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addXYActionPerformed
@@ -560,10 +582,11 @@ public class DistanceV extends javax.swing.JFrame {
             ((Visualization)visPanel).repaint();
             
             String s = xyzPosition.getName();
+            button2D.setSelected(false);
         	Visualization.selectedPositionName = s;
         	Visualization.positionController.put(s, Visualization.positionController.size());
             positionBox.setSelectedItem(s);
-        	System.out.println(s);
+            resetCamera();
         	//System.out.println(DistanceChooser.xpos.get(0));
         } catch (Exception e) {
             e.printStackTrace();
@@ -648,7 +671,7 @@ public class DistanceV extends javax.swing.JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        resetCamera();
     }//GEN-LAST:event_addLabelsActionPerformed
 
     private void addMatrixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMatrixActionPerformed
@@ -753,8 +776,10 @@ public class DistanceV extends javax.swing.JFrame {
     }//GEN-LAST:event_setColorActionPerformed
 
     private void positionBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionBoxActionPerformed
+    	button2D.setSelected(false);
     	String s = (String)positionBox.getSelectedItem();
     	Visualization.selectedPositionName = s;
+    	resetCamera();
     }//GEN-LAST:event_positionBoxActionPerformed
 
     private void ignoreLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ignoreLabelActionPerformed
@@ -762,7 +787,6 @@ public class DistanceV extends javax.swing.JFrame {
         if (selected!=null) {
             ignoreLabel(selected);
         }
-        
     }//GEN-LAST:event_ignoreLabelActionPerformed
 
     private void addLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLabelActionPerformed
@@ -846,6 +870,7 @@ public class DistanceV extends javax.swing.JFrame {
         for (String s : to) {
         	Visualization.toIgnore.remove(s);
         }
+        
 //        allLabelsSelected.add(labelToIgnore);
 //        allLabelsIgnored.remove(labelToIgnore);
 //        
@@ -858,7 +883,13 @@ public class DistanceV extends javax.swing.JFrame {
 //        labelIgnoreList.setListData(allLabelsIgnoredArray);
 //        
     }
-    
+    public void resetCamera() {
+    	Visualization.scale = 1;
+    	Visualization.angle = 0;
+    	Visualization.shiftX = 0;
+    	Visualization.shiftY = 0;
+    	Visualization.shiftZ = 0;
+    }
 //    public void changeLabelColor(String label){
 //   
 //        for(String s:discrete){
