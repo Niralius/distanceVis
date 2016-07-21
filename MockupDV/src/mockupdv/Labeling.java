@@ -23,12 +23,12 @@ import mockupdv.Pair;
  */
 public class Labeling extends Colors{
 
-    public static List<String> dLabels = new ArrayList<>(); //discrete complete set
-    public static List<String> discrete = new ArrayList<>(); //parsed list of labels
+    public  List<String> dLabels = new ArrayList<>(); //discrete complete set
+    public List<String> discrete = new ArrayList<>(); //parsed list of labels
     public List<Double> cLabels = new ArrayList<>(); //continuous
     public List<String> labelNames = new ArrayList<>(); //label names (e.g. record-43242)
     //public List<Pair<String,List<String>>> controller = new ArrayList<>();
-    public boolean labelType;
+    public boolean isContinuous;
     public double contMax, contMin;
     public ArrayList<String> colors = new ArrayList<String>();
     
@@ -64,16 +64,16 @@ public class Labeling extends Colors{
             if (areLabelsContinuous(label)){
                 double number = Double.parseDouble(label);
                 cLabels.add(number); //continuous labels                
-                labelType = true; 
+                isContinuous = true; 
             } else {
                 dLabels.add(label); // discrete labels
-                labelType = false;
+                isContinuous= false;
             }
  
             labelNames.add(id);
         }
                 
-        if(!labelType){  //getting the proper labels for Discrete Type (true if discrete)
+        if(!isContinuous){  //getting the proper labels for Discrete Type (true if discrete)
             discrete.add(dLabels.get(0));
 //            Colors labelsRGB = new Colors(dLabels);
             for(int i = 0; i<dLabels.size(); i++){

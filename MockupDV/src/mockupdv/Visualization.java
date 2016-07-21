@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
@@ -36,247 +36,325 @@ import com.jogamp.opengl.util.awt.TextRenderer;
  * @author MichaelH
  */
 public class Visualization extends GLJPanel implements GLEventListener {
-   // Define constants for the top-level container
-//   private static final int CANVAS_WIDTH = 320;  // width of the drawable
-//   private static final int CANVAS_HEIGHT = 240; // height of the drawable
-//   private static final int FPS = 60; // animator's target frames per second
-   
-    TextRenderer renderer;
-    static List<xyzPos> xyzPosList;
-    xyzPos positions = null;
-    List<Colors> colorList;
-    Colors colors = null;
-    // ...
-    Labeling labels;
-    DistanceV dv;
-    static Listener ml;
-    
-    double buckets = 9;
-    
-    static double scale = 1;
-    static double angle = 0;
-    static double shiftX = 0;
-    static double shiftY = 0;
-    static double shiftZ = 0;
-    
-    static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
-    static ArrayList<String> toIgnore = new ArrayList<String>();
-    static HashMap<String, Integer> positionController = new HashMap<String, Integer>();
-    static String selectedPositionName = "";
-    
-      
-   // Setup OpenGL Graphics Renderer
-   
-   private GLU glu;  // for the GL Utility
-   
-   /** Constructor to setup the GUI for this Component */
-   public Visualization() {
-      this.colorList = new ArrayList<>();
-      this.xyzPosList = new ArrayList<>();
-      this.addGLEventListener(this);
-   }
-   
-   // ------ Implement methods declared in GLEventListener ------
+	// Define constants for the top-level container
+	// private static final int CANVAS_WIDTH = 320; // width of the drawable
+	// private static final int CANVAS_HEIGHT = 240; // height of the drawable
+	// private static final int FPS = 60; // animator's target frames per second
 
-   /**
-    * Called back immediately after the OpenGL context is initialized. Can be used 
-    * to perform one-time initialization. Run only once.
-    */
-   @Override
-   public void init(GLAutoDrawable drawable) {	   
-	  GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
-      glu = new GLU();                         // get GL Utilities
-      gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // set background (clear) color
-      gl.glClearDepth(1.0f);      // set clear depth value to farthest
-      gl.glEnable(GL_DEPTH_TEST); // enables depth testing
-      gl.glDepthFunc(GL_LEQUAL);  // the type of depth test to do
-      gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // best perspective correction
-      gl.glShadeModel(GL_SMOOTH); // blends colors nicely, and smoothes out lighting
-      
-      ml = new Listener(this); //Zooming & rotating listener
-      addMouseListener(ml);
-      addMouseMotionListener(ml);
-      addMouseWheelListener(ml);
-      
-      renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 36));
-   }
-   
-   public void resetCamera() {
-	   ml = new Listener(this);
-   }
+	TextRenderer renderer;
+	static List<xyzPos> xyzPosList;
+	xyzPos positions = null;
+	// List<Colors> colorList;
+	// Colors colors = null;
+	// ...
+	static Labeling labels;
+	DistanceV dv;
+	static Listener ml;
 
-   /**
-    * Call-back handler for window re-size event. Also called when the drawable is 
-    * first set to visible.
-    */
-   @Override
-   public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-      GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
-            
-      if (height == 0) height = 1;   // prevent divide by zero
-      float aspect = (float)width / height;
+	double buckets = 9;
 
-      // Set the view port (display area) to cover the entire window
-      gl.glViewport(0, 0, width, height);
+	static double scale = 1;
+	static double angle = 0;
+	static double shiftX = 0;
+	static double shiftY = 0;
+	static double shiftZ = 0;
 
-      // Setup perspective projection, with aspect ratio matches viewport
-      gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
-      gl.glLoadIdentity();             // reset projection matrix
-      glu.gluPerspective(45.0, aspect, 0.01, 1000000.0); // fovy, aspect, zNear, zFar
-            
-      // Enable the model-view transform
-      gl.glMatrixMode(GL_MODELVIEW);
-      gl.glLoadIdentity(); // reset
-   }
+	static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
+	static ArrayList<String> toIgnore = new ArrayList<String>();
+	static HashMap<String, Integer> positionController = new HashMap<String, Integer>();
+	static String selectedPositionName = "";
+	static HashMap<String, Labeling> allTheLabels = new HashMap<String, Labeling>();
+	static ArrayList<String> continuousLabelsToShow = new ArrayList<String>();
 
-   /**
-    * Called back by the animator to perform rendering.
-    */
-   
-   int a = 0;
-   @Override
-   public void display(GLAutoDrawable drawable) {
-      GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
-      gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
-      gl.glLoadIdentity();  // reset the model-view matrix
-      if(!xyzPosList.isEmpty()) positions = xyzPosList.get(positionController.get(selectedPositionName));
-      if(!colorList.isEmpty()) colors = colorList.get(0);
-      
-      if(positions!=null && positions.x != null){
-                  
-        double c = Math.max((positions.maxX - positions.minX)/2,
-                            (positions.maxY - positions.minY)/2);
-        float markerSize = (float)c/100; //size of the shapes making up the vis
-        double tmp1 = c/Math.sin(45.0/180.0*Math.PI);
-        Double camDistance = Math.sqrt(tmp1*tmp1 - c*c); // Distance of the camera from the vis
-        
-        gl.glPushMatrix();
-        glu.gluLookAt((positions.centerX - shiftX)*scale + camDistance*Math.sin(angle), //EyeX
-                      (positions.centerY - shiftY)*scale,                               //EyeY
-                      (positions.centerZ - shiftZ)*scale + camDistance*Math.cos(angle), //EyeZ
-                      (positions.centerX - shiftX)*scale, //centerX
-                      (positions.centerY - shiftY)*scale, //centerY
-                      (positions.centerZ - shiftZ)*scale, //centerZ
-                      0, 1, 0); //Up vector
-        this.repaint();
-        for(int i = 0; i < positions.x.length; i++){
-        	String label = Labeling.dLabels.get(i);
-        	if (!toIgnore.contains(label)) { // Seeing if point is on the ignore list
-                gl.glPushMatrix();
-                gl.glScaled(scale, scale, scale); //essentially the zooming function
+	// Setup OpenGL Graphics Renderer
 
-    //            if () {           //2D and 3D
-    //                gl.glTranslated(positions.x[i], positions.y[i], 0);
-    //            } else {
-                        gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-    //            }
-                      gl.glBegin(GL_TRIANGLES);
-                      gl.glLoadName(i);
-                      
-                      // Getting color data if it exists, else creating color data
-                      double[] colors = new double[3];
-                      if (colorCodes.containsKey(label)) {
-                    	  colors = colorCodes.get(label);
-                      } else {
-						  // New label
-						  colors = toColor(label);
-                    	  colorCodes.put(label, colors);
-                      }
-                      
-                      gl.glColor3d(colors[0], colors[1], colors[2]);
-                      gl.glVertex3f(0.0f, markerSize, 0.0f);
-                      gl.glVertex3f(-markerSize, -markerSize, 0.0f);
-                      gl.glVertex3f(markerSize, -markerSize, 0.0f);
-                    gl.glEnd();
-                gl.glPopMatrix();
-        	}
-        }
-      }
-        gl.glPopMatrix();
+	private GLU glu; // for the GL Utility
 
-//        if(dv.isDiscrete){
-            for(int i=0; i<Labeling.discrete.size(); i++){
-//                
-//                Object color = Labeling.labelColors.get(Labeling.discrete.get(i));
-//                Double R = ((Colors)color).getR(i);
-//                Double G = ((Colors)color).getG(i);
-//                Double B = ((Colors)color).getB(i);
-
-//                Colors colors = new Colors(Labeling.discrete);
-                gl.glPushMatrix();
-                gl.glDisable(GL_DEPTH_TEST); //legend
-                glu.gluLookAt(0,0,30,
-                              0,0,0,
-                              0,1,0);
-                gl.glTranslated(-17.5, 10-(i*1.7), 0);
-                
-                double[] colors = colorCodes.get(Labeling.discrete.get(i));
-                
-                gl.glBegin(GL_QUADS); // draw using quads
-                   gl.glColor3d(colors[0], colors[1], colors[2]);
-                   gl.glVertex3f(-1.0f, 1.0f, 0.0f);
-                   gl.glVertex3f(1.0f, 1.0f, 0.0f);
-                   gl.glVertex3f(1.0f, -0.3f, 0.0f);
-                   gl.glVertex3f(-1.0f, -0.3f, 0.0f);
-                gl.glEnd();
-                
-                renderer.beginRendering(this.getWidth(), this.getHeight());
-                renderer.draw3D(Labeling.discrete.get(i), 60f, this.getHeight()-(i*30+30), 0f, 0.3f);
-                renderer.endRendering();
-                
-                gl.glEnable(GL_DEPTH_TEST);
-                gl.glPopMatrix();
-           }
-//        } else {
-//            gl.glDisable(GL_DEPTH_TEST);
-//            glu.gluLookAt(0,0,30,
-//                          0,0,0,
-//                          0,1,0);
-//            gl.glBegin(GL_QUADS);
-//                gl.glColor3f(1.0f, 0.0f, 0.0f);
-//                gl.glVertex3f(-1.0f, 1.0f, 0.0f);
-//                gl.glVertex3f(1.0f, 1.0f, 0.0f);
-//                gl.glColor3f(0.0f, 1.0f, 0.0f);
-//                gl.glVertex3f(1.0f, -1.0f, 0.0f);
-//                gl.glVertex3f(-1.0f, -1.0f, 0.0f);
-//            gl.glEnd();
-//            gl.glEnable(GL_DEPTH_TEST);
-//        }
-//        
-   }
-   
-   public static double[] toColor(String input) {
-	   try {
-	        java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-	        byte[] array = md.digest(input.getBytes());
-	        StringBuffer sb = new StringBuffer();
-	        for (int i = 0; i < array.length; ++i) {
-	          sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
-	       }
-	        String md5 = sb.toString();
-	        double[] toReturn = new double[3];
-	        for (int i = 0; i < 21; i+=10) {
-	        	String sub = md5.substring(i, i + 10);
-	        	sub = sub.replaceAll("[^0-9]", "");
-	        	toReturn[i/10] = Double.parseDouble("0." + sub);
-	        }
-	        return toReturn;
-	    } catch (java.security.NoSuchAlgorithmException e) {
-	    }
-	    return new double[3];
+	/** Constructor to setup the GUI for this Component */
+	public Visualization() {
+		// this.colorList = new ArrayList<>();
+		this.xyzPosList = new ArrayList<>();
+		this.addGLEventListener(this);
 	}
-   
-   /** 
-    * Called back before the OpenGL context is destroyed. Release resource such as buffers. 
-    */
-   @Override
-   public void dispose(GLAutoDrawable drawable) { }
-   
-    public void addXyz(xyzPos pos) {
-       xyzPosList.add(pos);
-    }
-    
-    public void addColor(Colors color) {
-       colorList.add(color);
-    }
+
+	// ------ Implement methods declared in GLEventListener ------
+
+	/**
+	 * Called back immediately after the OpenGL context is initialized. Can be
+	 * used to perform one-time initialization. Run only once.
+	 */
+	@Override
+	public void init(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2(); // get the OpenGL graphics context
+		glu = new GLU(); // get GL Utilities
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // set background (clear) color
+		gl.glClearDepth(1.0f); // set clear depth value to farthest
+		gl.glEnable(GL_DEPTH_TEST); // enables depth testing
+		gl.glDepthFunc(GL_LEQUAL); // the type of depth test to do
+		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // best
+																// perspective
+																// correction
+		gl.glShadeModel(GL_SMOOTH); // blends colors nicely, and smoothes out
+									// lighting
+
+		ml = new Listener(this); // Zooming & rotating listener
+		addMouseListener(ml);
+		addMouseMotionListener(ml);
+		addMouseWheelListener(ml);
+
+		renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 36));
+	}
+
+	/**
+	 * Call-back handler for window re-size event. Also called when the drawable
+	 * is first set to visible.
+	 */
+	@Override
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		GL2 gl = drawable.getGL().getGL2(); // get the OpenGL 2 graphics context
+
+		if (height == 0)
+			height = 1; // prevent divide by zero
+		float aspect = (float) width / height;
+
+		// Set the view port (display area) to cover the entire window
+		gl.glViewport(0, 0, width, height);
+
+		// Setup perspective projection, with aspect ratio matches viewport
+		gl.glMatrixMode(GL_PROJECTION); // choose projection matrix
+		gl.glLoadIdentity(); // reset projection matrix
+		glu.gluPerspective(45.0, aspect, 0.01, 1000000.0); // fovy, aspect,
+															// zNear, zFar
+
+		// Enable the model-view transform
+		gl.glMatrixMode(GL_MODELVIEW);
+		gl.glLoadIdentity(); // reset
+	}
+
+	/**
+	 * Called back by the animator to perform rendering.
+	 */
+
+	int a = 0;
+
+	@Override
+	public void display(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2(); // get the OpenGL 2 graphics context
+		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color
+																// and depth
+																// buffers
+		gl.glLoadIdentity(); // reset the model-view matrix
+		if (!xyzPosList.isEmpty())
+			positions = xyzPosList.get(positionController.get(selectedPositionName));
+		// if(!colorList.isEmpty()) colors = colorList.get(0);
+
+		if (positions != null && positions.x != null) {
+
+			double c = Math.max((positions.maxX - positions.minX) / 2, (positions.maxY - positions.minY) / 2);
+			float markerSize = (float) c / 100; // size of the shapes making up
+												// the vis
+			double tmp1 = c / Math.sin(45.0 / 180.0 * Math.PI);
+			Double camDistance = Math.sqrt(tmp1 * tmp1 - c * c); // Distance of
+																	// the
+																	// camera
+																	// from the
+																	// vis
+
+			gl.glPushMatrix();
+			glu.gluLookAt((positions.centerX - shiftX) * scale + camDistance * Math.sin(angle), // EyeX
+					(positions.centerY - shiftY) * scale, // EyeY
+					(positions.centerZ - shiftZ) * scale + camDistance * Math.cos(angle), // EyeZ
+					(positions.centerX - shiftX) * scale, // centerX
+					(positions.centerY - shiftY) * scale, // centerY
+					(positions.centerZ - shiftZ) * scale, // centerZ
+					0, 1, 0); // Up vector
+			this.repaint();
+			for (int i = 0; i < positions.x.length; i++) {
+				if (!labels.isContinuous) {
+					String label = labels.dLabels.get(i);
+
+					if (!toIgnore.contains(label)) { // Seeing if point is on
+														// the ignore list
+						gl.glPushMatrix();
+						gl.glScaled(scale, scale, scale); // essentially the
+															// zooming function
+
+						// if () { //2D and 3D
+						// gl.glTranslated(positions.x[i], positions.y[i], 0);
+						// } else {
+						gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+						// }
+						gl.glBegin(GL_TRIANGLES);
+						gl.glLoadName(i);
+
+						// Veeery expensive circles
+						//GLUquadric point = glu.gluNewQuadric();
+						//glu.gluSphere(point, 0.05, 16, 16);
+
+						// Getting color data if it exists, else creating color
+						// data
+						double[] colors = new double[3];
+						if (colorCodes.containsKey(label)) {
+							colors = colorCodes.get(label);
+						} else {
+							// New label
+							colors = toColor(label);
+							colorCodes.put(label, colors);
+						}
+
+						gl.glColor3d(colors[0], colors[1], colors[2]);
+						gl.glVertex3f(0.0f, markerSize, 0.0f);
+						gl.glVertex3f(-markerSize, -markerSize, 0.0f);
+						gl.glVertex3f(markerSize, -markerSize, 0.0f);
+						gl.glEnd();
+						gl.glPopMatrix();
+					}
+				} else {
+					// Is Continuous.
+					for (int contI = 0; contI < continuousLabelsToShow.size(); contI++) {
+						List<Double> colors = allTheLabels.get(continuousLabelsToShow.get(contI)).cLabels;
+						gl.glPushMatrix();
+						gl.glScaled(scale, scale, scale); // essentially the
+															// zooming function
+	
+						// if () { //2D and 3D
+						// gl.glTranslated(positions.x[i], positions.y[i], 0);
+						// } else {
+						gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
+						// }
+						gl.glBegin(GL_TRIANGLES);
+						gl.glLoadName(i);
+	
+						// Veeery expensive circles
+						//GLUquadric point = glu.gluNewQuadric();
+						//glu.gluSphere(point, 0.05, 16, 16);
+	
+						// Time to get them colors...
+						Double toAdd = colors.get(i);
+	
+						double r = 1, g = 1, b = 1;
+						
+						double min = allTheLabels.get(continuousLabelsToShow.get(contI)).contMin;
+						double max = allTheLabels.get(continuousLabelsToShow.get(contI)).contMax;
+						
+						double colorVal = (toAdd - min) / (max - min);
+						
+						switch (contI) {
+							case 0: r = colorVal; break;
+							case 1: g = colorVal; break;
+							case 2: b = colorVal; break;
+						}
+							
+	
+						gl.glColor3d(r, g, b);
+						gl.glVertex3f(0.0f, markerSize, 0.0f);
+						gl.glVertex3f(-markerSize, -markerSize, 0.0f);
+						gl.glVertex3f(markerSize, -markerSize, 0.0f);
+						gl.glEnd();
+						gl.glPopMatrix();
+					}
+				}
+			}
+		}
+		gl.glPopMatrix();
+
+		// if(dv.isDiscrete){
+		try {
+			for (int i = 0; i < labels.discrete.size(); i++) {
+				//
+				// Object color =
+				// Labeling.labelColors.get(Labeling.discrete.get(i));
+				// Double R = ((Colors)color).getR(i);
+				// Double G = ((Colors)color).getG(i);
+				// Double B = ((Colors)color).getB(i);
+
+				// Colors colors = new Colors(Labeling.discrete);
+				gl.glPushMatrix();
+				gl.glDisable(GL_DEPTH_TEST); // legend
+				glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
+				gl.glTranslated(-17.5, 10 - (i * 1.7), 0);
+
+				double[] colors = colorCodes.get(labels.discrete.get(i));
+
+				gl.glBegin(GL_QUADS); // draw using quads
+				gl.glColor3d(colors[0], colors[1], colors[2]);
+				gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+				gl.glVertex3f(1.0f, 1.0f, 0.0f);
+				gl.glVertex3f(1.0f, -0.3f, 0.0f);
+				gl.glVertex3f(-1.0f, -0.3f, 0.0f);
+				gl.glEnd();
+
+				renderer.beginRendering(this.getWidth(), this.getHeight());
+				renderer.draw3D(labels.discrete.get(i), 60f, this.getHeight() - (i * 30 + 30), 0f, 0.3f);
+				renderer.endRendering();
+
+				gl.glEnable(GL_DEPTH_TEST);
+				gl.glPopMatrix();
+			}
+		} catch (NullPointerException e) {
+
+		}
+		// } else {
+		// gl.glDisable(GL_DEPTH_TEST);
+		// glu.gluLookAt(0,0,30,
+		// 0,0,0,
+		// 0,1,0);
+		// gl.glBegin(GL_QUADS);
+		// gl.glColor3f(1.0f, 0.0f, 0.0f);
+		// gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+		// gl.glVertex3f(1.0f, 1.0f, 0.0f);
+		// gl.glColor3f(0.0f, 1.0f, 0.0f);
+		// gl.glVertex3f(1.0f, -1.0f, 0.0f);
+		// gl.glVertex3f(-1.0f, -1.0f, 0.0f);
+		// gl.glEnd();
+		// gl.glEnable(GL_DEPTH_TEST);
+		// }
+		//
+	}
+
+	public static double[] toColor(String input) {
+		try {
+			java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+			byte[] array = md.digest(input.getBytes());
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < array.length; ++i) {
+				sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+			}
+			String md5 = sb.toString();
+			double[] toReturn = new double[3];
+			for (int i = 0; i < 21; i += 10) {
+				String sub = md5.substring(i, i + 10);
+
+				// This gives more colorful results
+				sub = sub.replaceAll("[^0-9]", "");
+				toReturn[i / 10] = Double.parseDouble("0." + sub);
+
+				// This might guarantee more distinction
+				// int sum = 0;
+				// for (int a = 0; a < sub.length(); a++) {
+				// sum += (int) sub.charAt(a);
+				// }
+				// toReturn[i / 10] = Double.parseDouble("0." + sum);
+			}
+			return toReturn;
+		} catch (java.security.NoSuchAlgorithmException e) {
+		}
+		return new double[3];
+	}
+
+	/**
+	 * Called back before the OpenGL context is destroyed. Release resource such
+	 * as buffers.
+	 */
+	@Override
+	public void dispose(GLAutoDrawable drawable) {
+	}
+
+	public void addXyz(xyzPos pos) {
+		xyzPosList.add(pos);
+	}
+
+	// public void addColor(Colors color) {
+	// colorList.add(color);
+	// }
 }
