@@ -21,7 +21,11 @@ import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -58,12 +62,14 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	static double shiftY = 0;
 	static double shiftZ = 0;
 
-	static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>();
+	static HashMap<String, double[]> colorCodes = new HashMap<String, double[]>(); // caching
+																					// purposes
 	static ArrayList<String> toIgnore = new ArrayList<String>();
 	static HashMap<String, Integer> positionController = new HashMap<String, Integer>();
 	static String selectedPositionName = "";
 	static HashMap<String, Labeling> allTheLabels = new HashMap<String, Labeling>();
-	static ArrayList<String> continuousLabelsToShow = new ArrayList<String>(3);
+	static String[] continuousLabelsToShow = new String[3];
+	static LinkedHashMap<Double, Double[]> cLabelColors = new LinkedHashMap<Double, Double[]>();
 
 	// Setup OpenGL Graphics Renderer
 
@@ -198,7 +204,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 						} else {
 							// New label
 							colors = toColor(label);
-							colorCodes.put(label, colors);
+							colorCodes.put(label, colors); // caching
 						}
 
 						gl.glColor3d(colors[0], colors[1], colors[2]);
@@ -210,20 +216,16 @@ public class Visualization extends GLJPanel implements GLEventListener {
 					}
 				} else {
 					// Is Continuous.
-					try {
-						for (int contI = 0; contI < continuousLabelsToShow.size(); contI++) {
-							List<Double> colors = allTheLabels.get(continuousLabelsToShow.get(contI)).cLabels;
+
+					for (int contI = 0; contI < continuousLabelsToShow.length; contI++) {
+						try {
+							List<Double> colors = allTheLabels.get(continuousLabelsToShow[contI]).cLabels;
 							gl.glPushMatrix();
 							gl.glScaled(scale, scale, scale); // essentially the
 																// zooming
 																// function
 
-							// if () { //2D and 3D
-							// gl.glTranslated(positions.x[i], positions.y[i],
-							// 0);
-							// } else {
 							gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-							// }
 							gl.glBegin(GL_TRIANGLES);
 							gl.glLoadName(i);
 
@@ -233,77 +235,122 @@ public class Visualization extends GLJPanel implements GLEventListener {
 
 							// Time to get them colors...
 							Double toAdd = colors.get(i);
+							Double[] cLabelColorVals = new Double[] { 0.0, 0.0, 0.0 };
 
-							double r = 1, g = 1, b = 1;
-
-							double min = allTheLabels.get(continuousLabelsToShow.get(contI)).contMin;
-							double max = allTheLabels.get(continuousLabelsToShow.get(contI)).contMax;
-
-							double colorVal = (toAdd - min) / (max - min);
-
-							switch (contI) {
-							case 0:
-								r = colorVal;
-								break;
-							case 1:
-								g = colorVal;
-								break;
-							case 2:
-								b = colorVal;
-								break;
+							if (!cLabelColors.containsKey(toAdd)) {
+								for (int col = 0; col < 3; col++) {
+									double colorVal;
+									try {
+										double min = allTheLabels.get(continuousLabelsToShow[col]).contMin;
+										double max = allTheLabels.get(continuousLabelsToShow[col]).contMax;
+										double intermid = max - min;
+										colorVal = (toAdd / intermid) - (min / intermid);
+										// colorVal = (toAdd - min) / (max -
+										// min);
+									} catch (Exception e) {
+										colorVal = 0;
+									}
+									cLabelColorVals[col] = colorVal;
+									cLabelColors.put(toAdd, cLabelColorVals);
+								}
+							} else {
+								cLabelColorVals = cLabelColors.get(toAdd);
 							}
-
-							gl.glColor3d(r, g, b);
+							gl.glColor3d(cLabelColorVals[0], cLabelColorVals[1], cLabelColorVals[2]);
 							gl.glVertex3f(0.0f, markerSize, 0.0f);
 							gl.glVertex3f(-markerSize, -markerSize, 0.0f);
 							gl.glVertex3f(markerSize, -markerSize, 0.0f);
 							gl.glEnd();
 							gl.glPopMatrix();
+						} catch (NullPointerException | IndexOutOfBoundsException e) {
+							// User left the middle box blank...
 						}
-					} catch (NullPointerException e) {
-						// User left the middle box blank...
 					}
 				}
 			}
 		}
 		gl.glPopMatrix();
 
+		// Legend(ary) stuff
 		// if(dv.isDiscrete){
 		try {
-			for (int i = 0; i < labels.discrete.size(); i++) {
-				//
-				// Object color =
-				// Labeling.labelColors.get(Labeling.discrete.get(i));
-				// Double R = ((Colors)color).getR(i);
-				// Double G = ((Colors)color).getG(i);
-				// Double B = ((Colors)color).getB(i);
+			if (!labels.isContinuous) {
+				for (int i = 0; i < labels.discrete.size(); i++) {
+					//
+					// Object color =
+					// Labeling.labelColors.get(Labeling.discrete.get(i));
+					// Double R = ((Colors)color).getR(i);
+					// Double G = ((Colors)color).getG(i);
+					// Double B = ((Colors)color).getB(i);
 
-				// Colors colors = new Colors(Labeling.discrete);
-				gl.glPushMatrix();
-				gl.glDisable(GL_DEPTH_TEST); // legend
-				glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
-				gl.glTranslated(-17.5, 10 - (i * 1.7), 0);
+					// Colors colors = new Colors(Labeling.discrete);
+					gl.glPushMatrix();
+					gl.glDisable(GL_DEPTH_TEST); // legend
+					glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
+					gl.glTranslated(-17.5, 10 - (i * 1.7), 0);
 
-				double[] colors = colorCodes.get(labels.discrete.get(i));
+					double[] colors = colorCodes.get(labels.discrete.get(i));
 
-				gl.glBegin(GL_QUADS); // draw using quads
-				gl.glColor3d(colors[0], colors[1], colors[2]);
-				gl.glVertex3f(-1.0f, 1.0f, 0.0f);
-				gl.glVertex3f(1.0f, 1.0f, 0.0f);
-				gl.glVertex3f(1.0f, -0.3f, 0.0f);
-				gl.glVertex3f(-1.0f, -0.3f, 0.0f);
-				gl.glEnd();
+					gl.glBegin(GL_QUADS); // draw using quads
+					gl.glColor3d(colors[0], colors[1], colors[2]);
+					gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+					gl.glVertex3f(1.0f, 1.0f, 0.0f);
+					gl.glVertex3f(1.0f, -0.3f, 0.0f);
+					gl.glVertex3f(-1.0f, -0.3f, 0.0f);
+					gl.glEnd();
 
-				renderer.beginRendering(this.getWidth(), this.getHeight());
-				renderer.draw3D(labels.discrete.get(i), 60f, this.getHeight() - (i * 30 + 30), 0f, 0.3f);
-				renderer.endRendering();
+					renderer.beginRendering(this.getWidth(), this.getHeight());
+					renderer.draw3D(labels.discrete.get(i), 60f, this.getHeight() - (i * 30 + 30), 0f, 0.3f);
+					renderer.endRendering();
 
-				gl.glEnable(GL_DEPTH_TEST);
-				gl.glPopMatrix();
+					gl.glEnable(GL_DEPTH_TEST);
+					gl.glPopMatrix();
+				}
+			} else if (labels.isContinuous) {
+				// Is continuous
+				for (int i = 0; i < continuousLabelsToShow.length; i++) {
+					Labeling cLabel = allTheLabels.get(continuousLabelsToShow[i]);
+					List<Double> data = cLabel.cLabels;
+
+					// show labels! Colors are stored in a.. hashmap.
+					gl.glPushMatrix();
+					gl.glDisable(GL_DEPTH_TEST); // legend
+					glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
+					gl.glTranslated(-17.5 + (3 * i), 10, 0);
+					double r = 0, g = 0, b = 0;
+					switch (i) {
+					case 0:
+						r = 1;
+						break;
+					case 1:
+						g = 1;
+						break;
+					case 2:
+						b = 1;
+						break;
+					}
+					gl.glBegin(GL_QUADS); // draw using quads
+					gl.glColor3d(0, 0, 0);
+					gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+					gl.glVertex3f(1.0f, 1.0f, 0.0f);
+					gl.glColor3d(r, g, b);
+					gl.glVertex3f(1.0f, -20f, 0.0f);
+					gl.glVertex3f(-1.0f, -20f, 0.0f);
+					gl.glEnd();
+
+					renderer.beginRendering(this.getWidth(), this.getHeight());
+					renderer.draw3D(String.format("%.3f", cLabel.contMin), -17.5f + (3 * i), (float) (10 - (i * 1.7)),
+							0f, 0.3f);
+					renderer.endRendering();
+
+					gl.glEnable(GL_DEPTH_TEST);
+					gl.glPopMatrix();
+				}
 			}
 		} catch (NullPointerException e) {
-
+			// e.printStackTrace();
 		}
+
 		// } else {
 		// gl.glDisable(GL_DEPTH_TEST);
 		// glu.gluLookAt(0,0,30,

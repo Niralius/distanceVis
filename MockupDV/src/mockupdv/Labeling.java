@@ -96,7 +96,7 @@ public class Labeling extends Colors{
         }
     return true;
     }
-    public static Double getMax(List<Double> inputArray){ 
+    public static Double getMax(List<Double> inputArray) { 
         Double maxValue = inputArray.get(0); 
         for(int i=1;i < inputArray.size();i++){ 
             if(inputArray.get(i) > maxValue){ 

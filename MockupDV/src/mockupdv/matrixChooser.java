@@ -20,7 +20,7 @@ import mockupdv.Labeling;
  * @author MichaelH
  */
 
-public class matrixChooser extends matrixPos{
+public class matrixChooser extends matrixPos {
     
     public matrixChooser(File file) throws Exception {
         

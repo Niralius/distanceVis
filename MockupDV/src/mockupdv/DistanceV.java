@@ -724,7 +724,7 @@ public class DistanceV extends javax.swing.JFrame {
 			split.setEnabled(false);
 			try {
 				Visualization.labels = Visualization.allTheLabels.get(comboString);
-				Visualization.continuousLabelsToShow.add(0, comboString);
+				Visualization.continuousLabelsToShow[0] = comboString;
 				visPanel.repaint();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -732,40 +732,40 @@ public class DistanceV extends javax.swing.JFrame {
 		} else if (("-").equals(comboString)) {
 			// Do something?
 			// Currently throws up.
+			Visualization.continuousLabelsToShow[0] = "";
 		}
-		labelBox1.remove(0);
-		((Visualization) visPanel).repaint();
+		visPanel.repaint();
 	}// GEN-LAST:event_labelBox1ActionPerformed
 
 	private void labelBox2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
 		if (("-").equals(labelBox2.getSelectedItem().toString())) {
 			// remove this entry.
-			Visualization.continuousLabelsToShow.add(1, "");
+			Visualization.continuousLabelsToShow[1] = "";
 		} else {
 			try {
 				comboString = labelBox2.getSelectedItem().toString();
-				Visualization.continuousLabelsToShow.add(1, comboString);
+				Visualization.continuousLabelsToShow[1] = comboString;
 				visPanel.repaint();
 			} catch (NullPointerException e) {
-				// e.printStackTrace();
+				 e.printStackTrace();
 			}
 		}
-		((Visualization) visPanel).repaint();
+		visPanel.repaint();
 	}// GEN-LAST:event_labelBox2ActionPerformed
 
 	private void labelBox3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
 		if (("-").equals(labelBox3.getSelectedItem().toString())) {
-			Visualization.continuousLabelsToShow.add(2, "");
+			Visualization.continuousLabelsToShow[2] = "";
 		} else {
 			try {
 				comboString = labelBox3.getSelectedItem().toString();
-				Visualization.continuousLabelsToShow.add(2, comboString);
+				Visualization.continuousLabelsToShow[2] = comboString;
 				visPanel.repaint();
 			} catch (NullPointerException e) {
 				// e.printStackTrace();
 			}
 		}
-		((Visualization) visPanel).repaint();
+		visPanel.repaint();
 	}// GEN-LAST:event_labelBox3ActionPerformed
 
 	private void errorFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_errorFieldActionPerformed
