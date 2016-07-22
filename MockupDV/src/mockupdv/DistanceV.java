@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
@@ -706,7 +707,7 @@ public class DistanceV extends javax.swing.JFrame {
 	private void statisticsUpdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_statisticsUpdateActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_statisticsUpdateActionPerformed
-
+	
 	private void labelBox1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
 		comboString = labelBox1.getSelectedItem().toString();
 		if (comboString.contains("(D)")) {
@@ -725,18 +726,23 @@ public class DistanceV extends javax.swing.JFrame {
 			try {
 				Visualization.labels = Visualization.allTheLabels.get(comboString);
 				Visualization.continuousLabelsToShow[0] = comboString;
-				visPanel.repaint();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			if (comboString.equals(labelBox2.getSelectedItem().toString())) {
+				labelBox2.setSelectedIndex(0);
+				Visualization.continuousLabelsToShow[1] = "";
+			}
+			if (comboString.equals(labelBox3.getSelectedItem().toString())) {
+				labelBox3.setSelectedIndex(0);
+				Visualization.continuousLabelsToShow[2] = "";
+			}
 		} else if (("-").equals(comboString)) {
-			// Do something?
-			// Currently throws up.
 			Visualization.continuousLabelsToShow[0] = "";
 		}
 		visPanel.repaint();
 	}// GEN-LAST:event_labelBox1ActionPerformed
-
+	
 	private void labelBox2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
 		if (("-").equals(labelBox2.getSelectedItem().toString())) {
 			// remove this entry.
@@ -745,7 +751,16 @@ public class DistanceV extends javax.swing.JFrame {
 			try {
 				comboString = labelBox2.getSelectedItem().toString();
 				Visualization.continuousLabelsToShow[1] = comboString;
-				visPanel.repaint();
+				labelBox3.setEnabled(true);
+
+				if (comboString.equals(labelBox1.getSelectedItem().toString())) {
+					labelBox1.setSelectedIndex(0);
+					Visualization.continuousLabelsToShow[0] = "";
+				}
+				if (comboString.equals(labelBox3.getSelectedItem().toString())) {
+					labelBox3.setSelectedIndex(0);
+					Visualization.continuousLabelsToShow[2] = "";
+				}
 			} catch (NullPointerException e) {
 				 e.printStackTrace();
 			}
@@ -760,14 +775,22 @@ public class DistanceV extends javax.swing.JFrame {
 			try {
 				comboString = labelBox3.getSelectedItem().toString();
 				Visualization.continuousLabelsToShow[2] = comboString;
-				visPanel.repaint();
+				
+				if (comboString.equals(labelBox1.getSelectedItem())) {
+					labelBox1.setSelectedIndex(0);
+					Visualization.continuousLabelsToShow[0] = "";
+				}
+				if (comboString.equals(labelBox2.getSelectedItem())) {
+					labelBox2.setSelectedIndex(0);
+					Visualization.continuousLabelsToShow[2] = "";
+				}
 			} catch (NullPointerException e) {
 				// e.printStackTrace();
 			}
 		}
 		visPanel.repaint();
 	}// GEN-LAST:event_labelBox3ActionPerformed
-
+	
 	private void errorFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_errorFieldActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_errorFieldActionPerformed
