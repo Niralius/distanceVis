@@ -454,6 +454,11 @@ public class DistanceV extends javax.swing.JFrame {
 
 		outline.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, 0));
 		outline.setText("Show Outline");
+		outline.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				outlineActionPerformed(evt);
+			}
+		});
 		jMenu2.add(outline);
 
 		jMenuBar1.add(jMenu2);
@@ -615,6 +620,12 @@ public class DistanceV extends javax.swing.JFrame {
 
 	private void freezeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_freezeActionPerformed
 		// TODO add your handling code here:
+		// Freeze Camera
+		// asdf
+	}// GEN-LAST:event_freezeActionPerformed
+
+	private void outlineActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_freezeActionPerformed
+		Visualization.outlineEnabled = !Visualization.outlineEnabled;
 	}// GEN-LAST:event_freezeActionPerformed
 
 	private void ExitActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ExitActionPerformed
@@ -677,8 +688,8 @@ public class DistanceV extends javax.swing.JFrame {
 				}
 				String toAddItem = "(D) " + labelTitle[labelTitle.length - 1];
 				labelBox1.addItem(toAddItem);
-				labelBox2.addItem(toAddItem);
-				labelBox3.addItem(toAddItem);
+				// labelBox2.addItem(toAddItem);
+				// labelBox3.addItem(toAddItem);
 				Visualization.allTheLabels.put(toAddItem, labelPos);
 			} else {
 				String toAddItem = "(C) " + labelTitle[labelTitle.length - 1];
@@ -707,7 +718,7 @@ public class DistanceV extends javax.swing.JFrame {
 	private void statisticsUpdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_statisticsUpdateActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_statisticsUpdateActionPerformed
-	
+
 	private void labelBox1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
 		comboString = labelBox1.getSelectedItem().toString();
 		if (comboString.contains("(D)")) {
@@ -742,55 +753,63 @@ public class DistanceV extends javax.swing.JFrame {
 		}
 		visPanel.repaint();
 	}// GEN-LAST:event_labelBox1ActionPerformed
-	
-	private void labelBox2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
-		if (("-").equals(labelBox2.getSelectedItem().toString())) {
-			// remove this entry.
-			Visualization.continuousLabelsToShow[1] = "";
-		} else {
-			try {
-				comboString = labelBox2.getSelectedItem().toString();
-				Visualization.continuousLabelsToShow[1] = comboString;
-				labelBox3.setEnabled(true);
 
-				if (comboString.equals(labelBox1.getSelectedItem().toString())) {
-					labelBox1.setSelectedIndex(0);
-					Visualization.continuousLabelsToShow[0] = "";
+	private void labelBox2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
+		try {
+			if (("-").equals(labelBox2.getSelectedItem().toString())) {
+				// remove this entry.
+				Visualization.continuousLabelsToShow[1] = "";
+			} else {
+				try {
+					comboString = labelBox2.getSelectedItem().toString();
+					Visualization.continuousLabelsToShow[1] = comboString;
+					labelBox3.setEnabled(true);
+
+					if (comboString.equals(labelBox1.getSelectedItem().toString())) {
+						labelBox1.setSelectedIndex(0);
+						Visualization.continuousLabelsToShow[0] = "";
+					}
+					if (comboString.equals(labelBox3.getSelectedItem().toString())) {
+						labelBox3.setSelectedIndex(0);
+						Visualization.continuousLabelsToShow[2] = "";
+					}
+				} catch (NullPointerException e) {
+					// e.printStackTrace();
 				}
-				if (comboString.equals(labelBox3.getSelectedItem().toString())) {
-					labelBox3.setSelectedIndex(0);
-					Visualization.continuousLabelsToShow[2] = "";
-				}
-			} catch (NullPointerException e) {
-				 e.printStackTrace();
 			}
+		} catch (NullPointerException e) {
+
 		}
 		visPanel.repaint();
 	}// GEN-LAST:event_labelBox2ActionPerformed
 
 	private void labelBox3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_labelBox1ActionPerformed
-		if (("-").equals(labelBox3.getSelectedItem().toString())) {
-			Visualization.continuousLabelsToShow[2] = "";
-		} else {
-			try {
-				comboString = labelBox3.getSelectedItem().toString();
-				Visualization.continuousLabelsToShow[2] = comboString;
-				
-				if (comboString.equals(labelBox1.getSelectedItem())) {
-					labelBox1.setSelectedIndex(0);
-					Visualization.continuousLabelsToShow[0] = "";
+		try {
+			if (("-").equals(labelBox3.getSelectedItem().toString())) {
+				Visualization.continuousLabelsToShow[2] = "";
+			} else {
+				try {
+					comboString = labelBox3.getSelectedItem().toString();
+					Visualization.continuousLabelsToShow[2] = comboString;
+
+					if (comboString.equals(labelBox1.getSelectedItem())) {
+						labelBox1.setSelectedIndex(0);
+						Visualization.continuousLabelsToShow[0] = "";
+					}
+					if (comboString.equals(labelBox2.getSelectedItem())) {
+						labelBox2.setSelectedIndex(0);
+						Visualization.continuousLabelsToShow[2] = "";
+					}
+				} catch (NullPointerException e) {
+					// e.printStackTrace();
 				}
-				if (comboString.equals(labelBox2.getSelectedItem())) {
-					labelBox2.setSelectedIndex(0);
-					Visualization.continuousLabelsToShow[2] = "";
-				}
-			} catch (NullPointerException e) {
-				// e.printStackTrace();
 			}
+			visPanel.repaint();
+		} catch (NullPointerException e) {
+
 		}
-		visPanel.repaint();
 	}// GEN-LAST:event_labelBox3ActionPerformed
-	
+
 	private void errorFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_errorFieldActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_errorFieldActionPerformed
