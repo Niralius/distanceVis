@@ -11,6 +11,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.SwingUtilities;
+
 import mockupdv.Visualization;
 import mockupdv.xyzPos;
 
@@ -29,6 +31,10 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
     int last_drag_y = 0;
     int total_offset_x = 0;
     int total_offset_y = 0;
+    
+    // For mouse selection
+    static double mouseX = 0;
+    static double mouseY = 0;
 
     int last_right_drag_x = 0;  // for rotations
     int last_right_drag_y = 0;
@@ -38,6 +44,10 @@ public class Listener implements MouseListener, MouseMotionListener, MouseWheelL
     }
     
     public void mouseMoved(MouseEvent e) {
+    	mouseX = e.getX();
+    	mouseY = e.getY();
+    	//Visualization.mouseMoved();
+    	Visualization.mouseMoving = true;
     }
     public void mouseEntered(MouseEvent e) {
     }

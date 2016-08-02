@@ -19,20 +19,22 @@ import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.geom.Path2D;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
@@ -47,7 +49,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 
 	TextRenderer renderer;
 	static List<xyzPos> xyzPosList;
-	xyzPos positions = null;
+	static xyzPos positions = null;
 	// List<Colors> colorList;
 	// Colors colors = null;
 	// ...
@@ -73,9 +75,11 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	static LinkedHashMap<Double, Double[]> cLabelColors = new LinkedHashMap<Double, Double[]>();
 	static boolean outlineEnabled = false;
 
+	static boolean mouseMoving = false;
+
 	// Setup OpenGL Graphics Renderer
 
-	private GLU glu; // for the GL Utility
+	private static GLU glu; // for the GL Utility
 
 	/** Constructor to setup the GUI for this Component */
 	public Visualization() {
@@ -144,16 +148,82 @@ public class Visualization extends GLJPanel implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2(); // get the OpenGL 2 graphics context
+		if (!mouseMoving) {
+			drawScene(gl);
+		} else {
+			int bufferSize = 512;
+			double mouseX = Listener.mouseX;
+			double mouseY = Listener.mouseY;
+			int[] viewPort = new int[4];
+	        IntBuffer selectBuffer = Buffers.newDirectIntBuffer(bufferSize);
+	        int hits = 0;
+	        gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
+	        gl.glSelectBuffer(bufferSize, selectBuffer);
+	        gl.glRenderMode(GL2.GL_SELECT);
+	        gl.glInitNames();
+	        gl.glPushName(0);
+	        gl.glMatrixMode(GL2.GL_PROJECTION);
+	        gl.glPushMatrix();
+	        gl.glLoadIdentity();
+	        glu.gluPickMatrix(mouseX, (double) viewPort[3] - mouseY, 2d, 2d, viewPort, 0);
+	        //glu.gluOrtho2D(0.0d, 1.0d, 0.0d, 1.0d);
+	        drawScene(gl);
+	        gl.glMatrixMode(GL2.GL_PROJECTION);
+	        gl.glPopMatrix();
+	        gl.glFlush();
+	        hits = gl.glRenderMode(GL2.GL_RENDER);	          
+	        processHits(hits, selectBuffer);
+	        mouseMoving = false;
+	        gl.glRenderMode(gl.GL_RENDER);
+	        gl.glMatrixMode(gl.GL_MODELVIEW);
+	        drawScene(gl);
+		}
+	}
+
+	public void processHits(int hits, IntBuffer buffer) {
+      System.out.println("---------------------------------");
+      System.out.println("Hits: " + hits);
+      int offset = 0;
+      int names;
+      float z1, z2;
+      for (int i=0;i<hits;i++)
+        {
+          System.out.println("- - - - - - - - - - - -");
+          System.out.println(" hit: " + (i + 1));
+          names = buffer.get(offset); offset++;
+          z1 = (float) (buffer.get(offset)& 0xffffffffL) / 0x7fffffff; offset++;
+          z2 = (float) (buffer.get(offset)& 0xffffffffL) / 0x7fffffff; offset++;
+          System.out.println("Number of names: " + names);
+          System.out.println("z1: " + z1);
+          System.out.println("z2: " + z2);
+          System.out.println("Names: ");
+
+          for (int j=0;j<names;j++)
+            {
+              System.out.print("       " + buffer.get(offset)); 
+              if (j==(names-1))
+                System.out.println("<-");
+              else
+                System.out.println();
+              offset++;
+            }
+          System.out.println("- - - - - - - - - - - -");
+        }
+      System.out.println("---------------------------------");
+    }
+	
+	public void drawScene(GL2 gl) {
+
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color
-																// and depth
-																// buffers
+															// and depth
+															// buffers
 		gl.glLoadIdentity(); // reset the model-view matrix
+	
 		if (!xyzPosList.isEmpty())
 			positions = xyzPosList.get(positionController.get(selectedPositionName));
 		// if(!colorList.isEmpty()) colors = colorList.get(0);
-
 		if (positions != null && positions.x != null) {
-
+	
 			double c = Math.max((positions.maxX - positions.minX) / 2, (positions.maxY - positions.minY) / 2);
 			float markerSize = (float) c / 100; // size of the shapes making up
 												// the vis
@@ -163,7 +233,6 @@ public class Visualization extends GLJPanel implements GLEventListener {
 																	// camera
 																	// from the
 																	// vis
-
 			gl.glPushMatrix();
 			glu.gluLookAt((positions.centerX - shiftX) * scale + camDistance * Math.sin(angle), // EyeX
 					(positions.centerY - shiftY) * scale, // EyeY
@@ -176,28 +245,29 @@ public class Visualization extends GLJPanel implements GLEventListener {
 			for (int i = 0; i < positions.x.length; i++) {
 				if (!labels.isContinuous) {
 					String label = labels.dLabels.get(i);
-
+	
 					if (!toIgnore.contains(label)) { // Seeing if point is on
 														// the ignore list
 						gl.glPushMatrix();
 						gl.glScaled(scale, scale, scale); // essentially the
 															// zooming function
-
+	
 						// if () { //2D and 3D
 						// gl.glTranslated(positions.x[i], positions.y[i], 0);
 						// } else {
 						gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
-						// }
-						gl.glBegin(GL_TRIANGLES);
-						gl.glLoadName(i);
+						// }						
 
+						gl.glLoadName(i);
+						gl.glBegin(GL_TRIANGLES);
+						
 						// Veeery expensive circles. Comment out {glBegin,
 						// glLoadName, glVertex3f}
 						// GLUquadric point = glu.gluNewQuadric();
 						// glu.gluSphere(point, 0.05, 3, 3); // Adjust last two
 						// parameters based on performance. Higher = more
 						// expensive
-
+	
 						// Getting color data if it exists, else creating color
 						// data
 						double[] colors = new double[3];
@@ -208,37 +278,36 @@ public class Visualization extends GLJPanel implements GLEventListener {
 							colors = toColor(label);
 							colorCodes.put(label, colors); // caching
 						}
-
+	
 						gl.glColor3d(colors[0], colors[1], colors[2]);
-
+	
 						gl.glVertex3f(0.0f, markerSize, 0.0f);
 						gl.glVertex3f(-markerSize, -markerSize, 0.0f);
 						gl.glVertex3f(markerSize, -markerSize, 0.0f);
-
+	
 						gl.glEnd();
 						gl.glPopMatrix();
 						if (outlineEnabled) { // Wireframe anybody?
 							gl.glPushMatrix();
 							gl.glScaled(scale, scale, scale);
-
+	
 							gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
 							gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE);
 							gl.glBegin(GL_TRIANGLES);
-							gl.glLoadName(i);
-
+	
 							gl.glColor3d(0, 0, 0);
-
+	
 							gl.glVertex3f(0.0f, markerSize, 0.0f);
 							gl.glVertex3f(-markerSize, -markerSize, 0.0f);
 							gl.glVertex3f(markerSize, -markerSize, 0.0f);
-
+	
 							gl.glEnd();
 							gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL);
 							gl.glPopMatrix();
 						}
 					}
 				}
-
+	
 				else {
 					// Is Continuous.
 					for (int contI = 0; contI < continuousLabelsToShow.length; contI++) {
@@ -249,19 +318,19 @@ public class Visualization extends GLJPanel implements GLEventListener {
 																// the
 																// zooming
 																// function
-
+	
 							gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
 							gl.glBegin(GL_TRIANGLES);
 							gl.glLoadName(i);
-
+	
 							// Veeery expensive circles
 							// GLUquadric point = glu.gluNewQuadric();
 							// glu.gluSphere(point, 0.05, 16, 16);
-
+	
 							// Time to get them colors...
 							Double toAdd = colors.get(i);
 							Double[] cLabelColorVals = new Double[] { 0.0, 0.0, 0.0 };
-
+	
 							if (!cLabelColors.containsKey(toAdd)) {
 								for (int col = 0; col < 3; col++) {
 									double colorVal;
@@ -290,54 +359,41 @@ public class Visualization extends GLJPanel implements GLEventListener {
 							if (outlineEnabled) { // Wireframe anybody?
 								gl.glPushMatrix();
 								gl.glScaled(scale, scale, scale);
-
+	
 								gl.glTranslated(positions.x[i], positions.y[i], positions.z[i]);
 								gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE);
 								gl.glBegin(GL_TRIANGLES);
-								gl.glLoadName(i);
-
+	
 								gl.glColor3d(0, 0, 0);
-
+	
 								gl.glVertex3f(0.0f, markerSize, 0.0f);
 								gl.glVertex3f(-markerSize, -markerSize, 0.0f);
 								gl.glVertex3f(markerSize, -markerSize, 0.0f);
-
+	
 								gl.glEnd();
 								gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL);
 								gl.glPopMatrix();
 							}
-
+	
 						} catch (NullPointerException | IndexOutOfBoundsException e) {
 							// User left the middle box blank...
 						}
 					}
 				}
-
 			}
 			gl.glPopMatrix();
-
+	
 			// Legend(ary) stuff
-			// if(dv.isDiscrete){
-			try
-
-			{
+			try {
 				if (!labels.isContinuous) {
 					for (int i = 0; i < labels.discrete.size(); i++) {
-						//
-						// Object color =
-						// Labeling.labelColors.get(Labeling.discrete.get(i));
-						// Double R = ((Colors)color).getR(i);
-						// Double G = ((Colors)color).getG(i);
-						// Double B = ((Colors)color).getB(i);
-
-						// Colors colors = new Colors(Labeling.discrete);
 						gl.glPushMatrix();
 						gl.glDisable(GL_DEPTH_TEST); // legend
 						glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
 						gl.glTranslated(-17.5, 10 - (i * 1.7), 0);
-
+	
 						double[] colors = colorCodes.get(labels.discrete.get(i));
-
+	
 						gl.glBegin(GL_QUADS); // draw using quads
 						gl.glColor3d(colors[0], colors[1], colors[2]);
 						gl.glVertex3f(-1.0f, 1.0f, 0.0f);
@@ -345,11 +401,11 @@ public class Visualization extends GLJPanel implements GLEventListener {
 						gl.glVertex3f(1.0f, -0.3f, 0.0f);
 						gl.glVertex3f(-1.0f, -0.3f, 0.0f);
 						gl.glEnd();
-
+	
 						renderer.beginRendering(this.getWidth(), this.getHeight());
 						renderer.draw3D(labels.discrete.get(i), 60f, this.getHeight() - (i * 30 + 30), 0f, 0.3f);
 						renderer.endRendering();
-
+	
 						gl.glEnable(GL_DEPTH_TEST);
 						gl.glPopMatrix();
 					}
@@ -358,7 +414,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 					for (int i = 0; i < continuousLabelsToShow.length; i++) {
 						Labeling cLabel = allTheLabels.get(continuousLabelsToShow[i]);
 						List<Double> data = cLabel.cLabels;
-
+	
 						// show labels! Colors are stored in a.. hashmap.
 						gl.glPushMatrix();
 						gl.glDisable(GL_DEPTH_TEST); // legend
@@ -384,25 +440,22 @@ public class Visualization extends GLJPanel implements GLEventListener {
 						gl.glVertex3f(1.0f, -20f, 0.0f);
 						gl.glVertex3f(-1.0f, -20f, 0.0f);
 						gl.glEnd();
-
+	
 						renderer.beginRendering(this.getWidth(), this.getHeight());
+						renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
 						renderer.draw3D(String.format("%.3f", cLabel.contMin), -17.5f + (3 * i),
 								(float) (10 - (i * 1.7)), 0f, 0.3f);
 						renderer.endRendering();
-
+	
 						gl.glEnable(GL_DEPTH_TEST);
 						gl.glPopMatrix();
 					}
 				}
-			} catch (
-
-			NullPointerException e)
-
-			{
+			} catch (NullPointerException e) {
 				// e.printStackTrace();
 			}
 		}
-
+	
 		// } else {
 		// gl.glDisable(GL_DEPTH_TEST);
 		// glu.gluLookAt(0,0,30,
@@ -420,7 +473,7 @@ public class Visualization extends GLJPanel implements GLEventListener {
 		// }
 		//
 	}
-
+	
 	public static double[] toColor(String input) {
 		try {
 			java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");

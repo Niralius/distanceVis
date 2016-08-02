@@ -1078,6 +1078,6 @@ public class DistanceV extends javax.swing.JFrame {
 	private javax.swing.JButton statistics;
 	private javax.swing.JFrame statisticsFrame;
 	private javax.swing.JButton statisticsUpdate;
-	private javax.swing.JPanel visPanel;
+	public static javax.swing.JPanel visPanel;
 	// End of variables declaration//GEN-END:variables
 }
